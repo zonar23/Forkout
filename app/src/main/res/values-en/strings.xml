@@ -7,9 +7,6 @@
     <string name="nav_settings">Settings</string>
     <string name="nav_back">Back</string>
 
-    <!-- Placeholders (M0) -->
-    <string name="today_placeholder">Your next session and weekly progress will show up here soon.</string>
-    <string name="history_placeholder">Your past workouts will show up here soon.</string>
 
     <!-- Settings -->
     <string name="settings_amoled_title">AMOLED black</string>
@@ -158,4 +155,35 @@
     <string name="summary_sets">Sets</string>
     <string name="summary_volume">Volume (kg)</string>
     <string name="summary_done">Done</string>
+
+    <!-- Durations -->
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours_minutes">%1$d h %2$02d min</string>
+
+    <!-- Today -->
+    <string name="today_next">Up next</string>
+    <string name="today_resume">Resume workout</string>
+    <string name="today_edit_day">Edit session</string>
+    <string name="today_no_exercises">This session has no exercises yet.</string>
+    <string name="today_week">This week</string>
+    <string name="today_week_progress">%1$d / %2$d</string>
+    <plurals name="today_week_sessions">
+        <item quantity="one">session</item>
+        <item quantity="other">sessions</item>
+    </plurals>
+    <string name="today_last">Last workout</string>
+    <string name="today_empty">Create a plan with at least one session. Your next workout and weekly progress will then show up here.</string>
+    <string name="today_create_plan">Create plan</string>
+
+    <!-- History -->
+    <string name="history_empty">No workouts yet. Your first workout will show up here.</string>
+    <plurals name="history_sets">
+        <item quantity="one">%d set</item>
+        <item quantity="other">%d sets</item>
+    </plurals>
+    <string name="history_delete">Delete workout</string>
+    <string name="history_delete_dialog_title">Delete workout?</string>
+    <string name="history_delete_dialog_text">The workout will be removed from your history permanently.</string>
+    <string name="exercise_history_title">History</string>
+    <string name="exercise_history_empty">No workouts with this exercise yet.</string>
 </resources>

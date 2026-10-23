@@ -80,6 +80,8 @@ Forkout ist ein schlanker, moderner Trainingsbegleiter für Kraftsport im Studio
 
 | Version | Funktion |
 |---|---|
+| 0.2 | **Bedienung vereinfachen:** Abläufe mit echten Nutzer:innen prüfen und intuitiver machen (z. B. kürzerer Weg vom Start zum Training, Einführung beim ersten Start, klarere Beschriftungen) |
+| 0.2 | Trainingsuhr pausieren (Pausenzeiten speichern) |
 | 0.2 | Diagramme pro Übung (Gewicht, Volumen, geschätztes 1RM) |
 | 0.2 | **Progressionshinweis** (doppelte Progression: alle Sätze mit Ziel-Wdh. geschafft → „Gewicht erhöhen?“) |
 | 0.2 | Optionales **RIR-Feld** (Wiederholungen in Reserve) pro Satz |

@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -35,9 +36,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.zonar23.forkout.R
 import io.github.zonar23.forkout.data.db.model.ExerciseType
 import io.github.zonar23.forkout.data.db.model.MuscleGroup
+import io.github.zonar23.forkout.data.repository.ExerciseHistoryEntry
+import io.github.zonar23.forkout.ui.components.DateFormat
 import io.github.zonar23.forkout.ui.components.DetailTopBar
+import io.github.zonar23.forkout.ui.components.WeightFormat
 import io.github.zonar23.forkout.ui.components.labelRes
 import io.github.zonar23.forkout.ui.theme.ForkoutTheme
+import io.github.zonar23.forkout.ui.theme.NumberTextStyles
 
 @Composable
 fun ExerciseEditScreen(
@@ -46,6 +51,7 @@ fun ExerciseEditScreen(
     viewModel: ExerciseEditViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val history by viewModel.history.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isDone) {
         if (uiState.isDone) onDone()
@@ -53,6 +59,7 @@ fun ExerciseEditScreen(
 
     ExerciseEditContent(
         uiState = uiState,
+        history = history,
         onBack = onDone,
         onNameChange = viewModel::onNameChange,
         onTypeSelect = viewModel::onTypeSelect,
@@ -72,6 +79,7 @@ fun ExerciseEditScreen(
 @Composable
 private fun ExerciseEditContent(
     uiState: ExerciseEditUiState,
+    history: List<ExerciseHistoryEntry>,
     onBack: () -> Unit,
     onNameChange: (String) -> Unit,
     onTypeSelect: (ExerciseType) -> Unit,
@@ -156,6 +164,10 @@ private fun ExerciseEditContent(
             )
 
             if (!uiState.isNew) {
+                ExerciseHistory(history)
+            }
+
+            if (!uiState.isNew) {
                 if (uiState.isArchived) {
                     OutlinedButton(
                         onClick = onRestoreClick,
@@ -208,6 +220,42 @@ private fun Section(
     }
 }
 
+/** Recent workouts with this exercise: date and completed sets, newest first. */
+@Composable
+private fun ExerciseHistory(history: List<ExerciseHistoryEntry>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = stringResource(R.string.exercise_history_title),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (history.isEmpty()) {
+            Text(
+                text = stringResource(R.string.exercise_history_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        val resources = LocalResources.current
+        history.forEach { entry ->
+            Column {
+                Text(DateFormat.formatDate(entry.startedAt), style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = entry.sets.joinToString(", ") {
+                        resources.getString(
+                            R.string.workout_last_set,
+                            it.actualReps ?: 0,
+                            WeightFormat.formatKg(it.actualWeightGrams ?: 0),
+                        )
+                    },
+                    style = NumberTextStyles.small,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun RemoveDialog(
     onConfirm: () -> Unit,
@@ -244,6 +292,7 @@ private fun ExerciseEditContentPreview() {
                 muscleGroups = setOf(MuscleGroup.LEGS, MuscleGroup.GLUTES),
                 setupNote = "Sitz Stufe 4",
             ),
+            history = emptyList(),
             onBack = {},
             onNameChange = {},
             onTypeSelect = {},

@@ -29,6 +29,14 @@ class PlanRepository @Inject constructor(
             plan?.copy(days = plan.days.sortedBy { it.position })
         }
 
+    /** Active plans, newest first, each with days sorted by position. */
+    fun observePlansWithDays(): Flow<List<PlanWithDays>> =
+        dao.observeActivePlansWithDays().map { plans ->
+            plans.map { it.copy(days = it.days.sortedBy { day -> day.position }) }
+        }
+
+    suspend fun getDay(id: Long): PlanDayEntity? = dao.getDay(id)
+
     /** Day with exercises and sets, all sorted by position. */
     fun observeDay(id: Long): Flow<PlanDayWithExercises?> =
         dao.observeDayWithExercises(id).map { it?.sorted() }

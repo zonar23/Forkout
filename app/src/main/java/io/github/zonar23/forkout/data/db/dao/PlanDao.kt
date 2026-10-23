@@ -27,6 +27,10 @@ interface PlanDao {
     @Query("SELECT * FROM plans WHERE id = :id")
     fun observePlanWithDays(id: Long): Flow<PlanWithDays?>
 
+    @Transaction
+    @Query("SELECT * FROM plans WHERE is_archived = 0 ORDER BY created_at DESC")
+    fun observeActivePlansWithDays(): Flow<List<PlanWithDays>>
+
     @Query("SELECT * FROM plans WHERE id = :id")
     suspend fun getPlan(id: Long): PlanEntity?
 

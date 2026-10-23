@@ -48,4 +48,7 @@ data class ExerciseEditRoute(val exerciseId: Long = NEW_ID) {
 data object HistoryRoute
 
 @Serializable
+data class HistoryDetailRoute(val sessionId: Long)
+
+@Serializable
 data object SettingsRoute

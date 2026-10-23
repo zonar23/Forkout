@@ -13,4 +13,12 @@ class TimeFormatTest {
         assertEquals("10:05", TimeFormat.formatMinutesSeconds(605))
         assertEquals("0:00", TimeFormat.formatMinutesSeconds(-5))
     }
+
+    @Test
+    fun formatDate_usesGermanWeekdayAndDate() {
+        assertEquals(
+            "Fr., 23.10.2026",
+            DateFormat.formatDate(java.time.Instant.parse("2026-10-23T10:00:00Z"), java.time.ZoneOffset.UTC),
+        )
+    }
 }

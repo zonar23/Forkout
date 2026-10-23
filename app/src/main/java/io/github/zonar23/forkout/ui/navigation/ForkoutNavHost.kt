@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import io.github.zonar23.forkout.ui.exercises.ExerciseEditScreen
 import io.github.zonar23.forkout.ui.exercises.ExercisesScreen
+import io.github.zonar23.forkout.ui.history.HistoryDetailScreen
 import io.github.zonar23.forkout.ui.history.HistoryScreen
 import io.github.zonar23.forkout.ui.plans.ExercisePickerScreen
 import io.github.zonar23.forkout.ui.plans.PlanDayScreen
@@ -32,7 +33,14 @@ fun ForkoutNavHost(
         startDestination = TodayRoute,
         modifier = modifier,
     ) {
-        composable<TodayRoute> { TodayScreen() }
+        composable<TodayRoute> {
+            TodayScreen(
+                onOpenWorkout = { navController.navigate(WorkoutRoute) { launchSingleTop = true } },
+                onEditDay = { dayId -> navController.navigate(PlanDayRoute(dayId)) },
+                onOpenWorkoutDetail = { sessionId -> navController.navigate(HistoryDetailRoute(sessionId)) },
+                onCreatePlan = { navController.navigate(PlanEditRoute()) },
+            )
+        }
 
         composable<PlansRoute> {
             PlansScreen(
@@ -104,7 +112,12 @@ fun ForkoutNavHost(
             ExerciseEditScreen(onDone = { navController.popBackStack<ExerciseEditRoute>(inclusive = true) })
         }
 
-        composable<HistoryRoute> { HistoryScreen() }
+        composable<HistoryRoute> {
+            HistoryScreen(onWorkoutClick = { sessionId -> navController.navigate(HistoryDetailRoute(sessionId)) })
+        }
+        composable<HistoryDetailRoute> {
+            HistoryDetailScreen(onBack = { navController.popBackStack<HistoryDetailRoute>(inclusive = true) })
+        }
         composable<SettingsRoute> { SettingsScreen() }
     }
 }

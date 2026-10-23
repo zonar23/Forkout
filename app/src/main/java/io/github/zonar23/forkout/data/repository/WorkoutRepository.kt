@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import io.github.zonar23.forkout.data.db.ForkoutDatabase
 import io.github.zonar23.forkout.data.db.entity.WorkoutSessionEntity
 import io.github.zonar23.forkout.data.db.entity.WorkoutSetEntity
+import io.github.zonar23.forkout.data.db.relation.SessionOverview
 import io.github.zonar23.forkout.data.db.relation.WorkoutSessionWithSets
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,6 +12,13 @@ import java.time.Clock
 import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
+
+/** All completed sets of one exercise in one finished workout. */
+data class ExerciseHistoryEntry(
+    val sessionId: Long,
+    val startedAt: Instant,
+    val sets: List<WorkoutSetEntity>,
+)
 
 @Singleton
 class WorkoutRepository @Inject constructor(
@@ -27,8 +35,23 @@ class WorkoutRepository @Inject constructor(
 
     fun observeHistory(): Flow<List<WorkoutSessionEntity>> = dao.observeFinishedSessions()
 
-    fun observeExerciseHistory(exerciseId: Long): Flow<List<WorkoutSetEntity>> =
-        dao.observeExerciseHistory(exerciseId)
+    /** Finished workouts with completed set count and volume, newest first. */
+    fun observeOverviews(): Flow<List<SessionOverview>> = dao.observeSessionOverviews()
+
+    fun observeLastFinished(): Flow<WorkoutSessionEntity?> = dao.observeLastFinishedSession()
+
+    /** Completed sets of an exercise grouped by workout, newest workout first. */
+    fun observeExerciseHistory(exerciseId: Long): Flow<List<ExerciseHistoryEntry>> =
+        dao.observeExerciseHistory(exerciseId).map { rows ->
+            rows.groupBy { it.set.sessionId }
+                .map { (sessionId, sessionRows) ->
+                    ExerciseHistoryEntry(
+                        sessionId = sessionId,
+                        startedAt = sessionRows.first().sessionStartedAt,
+                        sets = sessionRows.map { it.set },
+                    )
+                }
+        }
 
     fun observeFinishedCountSince(since: Instant): Flow<Int> = dao.observeFinishedCountSince(since)
 

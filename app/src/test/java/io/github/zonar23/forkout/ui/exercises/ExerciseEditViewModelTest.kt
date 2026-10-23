@@ -7,6 +7,7 @@ import io.github.zonar23.forkout.data.db.DatabaseTest
 import io.github.zonar23.forkout.data.db.model.ExerciseType
 import io.github.zonar23.forkout.data.db.model.MuscleGroup
 import io.github.zonar23.forkout.data.repository.ExerciseRepository
+import io.github.zonar23.forkout.data.repository.WorkoutRepository
 import io.github.zonar23.forkout.ui.navigation.ExerciseEditRoute
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -16,6 +17,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Clock
 
 @RunWith(AndroidJUnit4::class)
 class ExerciseEditViewModelTest : DatabaseTest() {
@@ -28,6 +30,7 @@ class ExerciseEditViewModelTest : DatabaseTest() {
     private fun viewModel(id: Long = ExerciseEditRoute.NEW_ID) = ExerciseEditViewModel(
         SavedStateHandle(mapOf("exerciseId" to id)),
         repository,
+        WorkoutRepository(db, Clock.systemUTC()),
     )
 
     // Room runs queries on its own executor, so tests wait for the expected state.

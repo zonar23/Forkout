@@ -8,11 +8,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.zonar23.forkout.data.db.entity.ExerciseEntity
 import io.github.zonar23.forkout.data.db.model.ExerciseType
 import io.github.zonar23.forkout.data.db.model.MuscleGroup
+import io.github.zonar23.forkout.data.repository.ExerciseHistoryEntry
 import io.github.zonar23.forkout.data.repository.ExerciseRepository
+import io.github.zonar23.forkout.data.repository.WorkoutRepository
 import io.github.zonar23.forkout.ui.navigation.ExerciseEditRoute
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,10 +27,17 @@ import javax.inject.Inject
 class ExerciseEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: ExerciseRepository,
+    workoutRepository: WorkoutRepository,
 ) : ViewModel() {
 
     private val exerciseId = savedStateHandle.toRoute<ExerciseEditRoute>().exerciseId
     private val isNew = exerciseId == ExerciseEditRoute.NEW_ID
+
+    /** Most recent workouts with this exercise, newest first. */
+    val history: StateFlow<List<ExerciseHistoryEntry>> =
+        (if (isNew) flowOf(emptyList()) else workoutRepository.observeExerciseHistory(exerciseId))
+            .map { it.take(HISTORY_LIMIT) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** The stored exercise, kept so that fields not shown in the editor survive an update. */
     private var original: ExerciseEntity? = null
@@ -116,5 +129,9 @@ class ExerciseEditViewModel @Inject constructor(
             original = original?.copy(isArchived = false)
             _uiState.update { it.copy(isArchived = false) }
         }
+    }
+
+    companion object {
+        const val HISTORY_LIMIT = 10
     }
 }

@@ -9,9 +9,6 @@
     <string name="nav_settings">Einstellungen</string>
     <string name="nav_back">Zurück</string>
 
-    <!-- Placeholders (M0) -->
-    <string name="today_placeholder">Hier erscheint bald deine nächste Einheit und dein Wochenfortschritt.</string>
-    <string name="history_placeholder">Hier siehst du bald deine vergangenen Trainings.</string>
 
     <!-- Settings -->
     <string name="settings_amoled_title">AMOLED-Schwarz</string>
@@ -160,4 +157,35 @@
     <string name="summary_sets">Sätze</string>
     <string name="summary_volume">Volumen (kg)</string>
     <string name="summary_done">Fertig</string>
+
+    <!-- Durations -->
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours_minutes">%1$d h %2$02d min</string>
+
+    <!-- Today -->
+    <string name="today_next">Als Nächstes</string>
+    <string name="today_resume">Training fortsetzen</string>
+    <string name="today_edit_day">Einheit bearbeiten</string>
+    <string name="today_no_exercises">Diese Einheit hat noch keine Übungen.</string>
+    <string name="today_week">Diese Woche</string>
+    <string name="today_week_progress">%1$d / %2$d</string>
+    <plurals name="today_week_sessions">
+        <item quantity="one">Einheit</item>
+        <item quantity="other">Einheiten</item>
+    </plurals>
+    <string name="today_last">Letztes Training</string>
+    <string name="today_empty">Lege einen Plan mit mindestens einer Einheit an. Dann siehst du hier dein nächstes Training und deinen Wochenfortschritt.</string>
+    <string name="today_create_plan">Plan anlegen</string>
+
+    <!-- History -->
+    <string name="history_empty">Noch keine Trainings. Nach deinem ersten Training erscheint es hier.</string>
+    <plurals name="history_sets">
+        <item quantity="one">%d Satz</item>
+        <item quantity="other">%d Sätze</item>
+    </plurals>
+    <string name="history_delete">Training löschen</string>
+    <string name="history_delete_dialog_title">Training löschen?</string>
+    <string name="history_delete_dialog_text">Das Training wird endgültig aus dem Verlauf entfernt.</string>
+    <string name="exercise_history_title">Verlauf</string>
+    <string name="exercise_history_empty">Noch keine Trainings mit dieser Übung.</string>
 </resources>

@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.zonar23.forkout.R
+import io.github.zonar23.forkout.ui.components.StatTile
 import io.github.zonar23.forkout.ui.components.TimeFormat
 import io.github.zonar23.forkout.ui.components.WeightFormat
 import io.github.zonar23.forkout.ui.theme.NumberTextStyles
@@ -65,24 +64,7 @@ fun WorkoutSummaryScreen(
             Text(uiState.dayName, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             if (summary != null) {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                    StatTile(
-                        label = stringResource(R.string.summary_duration),
-                        value = TimeFormat.formatElapsed(summary.duration.seconds),
-                        modifier = Modifier.weight(1f),
-                    )
-                    StatTile(
-                        label = stringResource(R.string.summary_sets),
-                        value = "${summary.completedSets}/${summary.totalSets}",
-                        modifier = Modifier.weight(1f),
-                    )
-                    StatTile(
-                        label = stringResource(R.string.summary_volume),
-                        // Volume is gram × reps; formatKg turns it into kg × reps.
-                        value = WeightFormat.formatKg(summary.volumeGrams.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()),
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+                WorkoutStatsRow(summary)
                 summary.exercises.forEach { exercise ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(exercise.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
@@ -106,20 +88,28 @@ fun WorkoutSummaryScreen(
     }
 }
 
+/** Duration, completed sets and volume side by side. Also used in the history detail. */
 @Composable
-private fun StatTile(label: String, value: String, modifier: Modifier = Modifier) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        modifier = modifier,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp, horizontal = 8.dp),
-        ) {
-            Text(value, style = NumberTextStyles.medium, color = MaterialTheme.colorScheme.primary)
-            Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
+fun WorkoutStatsRow(summary: WorkoutSummary) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+        StatTile(
+            label = stringResource(R.string.summary_duration),
+            value = TimeFormat.formatElapsed(summary.duration.seconds),
+            modifier = Modifier.weight(1f),
+        )
+        StatTile(
+            label = stringResource(R.string.summary_sets),
+            value = "${summary.completedSets}/${summary.totalSets}",
+            modifier = Modifier.weight(1f),
+        )
+        StatTile(
+            label = stringResource(R.string.summary_volume),
+            value = formatVolumeKg(summary.volumeGrams),
+            modifier = Modifier.weight(1f),
+        )
     }
 }
+
+/** Volume is stored as gram × reps; formatKg turns it into kg × reps. */
+fun formatVolumeKg(volumeGrams: Long): String =
+    WeightFormat.formatKg(volumeGrams.coerceAtMost(Int.MAX_VALUE.toLong()).toInt())

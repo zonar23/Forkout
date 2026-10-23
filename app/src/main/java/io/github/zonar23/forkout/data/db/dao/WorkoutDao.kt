@@ -8,6 +8,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import io.github.zonar23.forkout.data.db.entity.WorkoutSessionEntity
 import io.github.zonar23.forkout.data.db.entity.WorkoutSetEntity
+import io.github.zonar23.forkout.data.db.relation.ExerciseHistoryRow
+import io.github.zonar23.forkout.data.db.relation.SessionOverview
 import io.github.zonar23.forkout.data.db.relation.WorkoutSessionWithSets
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
@@ -71,15 +73,33 @@ interface WorkoutDao {
     )
     suspend fun getLastCompletedSets(exerciseId: Long): List<WorkoutSetEntity>
 
-    /** All completed sets of [exerciseId], newest workout first. */
+    /** All completed sets of [exerciseId] with their workout's start, newest workout first. */
     @Query(
         """
-        SELECT ws.* FROM workout_sets ws
+        SELECT ws.*, s.started_at AS session_started_at FROM workout_sets ws
         JOIN workout_sessions s ON ws.session_id = s.id
         WHERE ws.exercise_id = :exerciseId AND ws.completed_at IS NOT NULL
             AND s.finished_at IS NOT NULL
         ORDER BY s.started_at DESC, ws.set_index
         """
     )
-    fun observeExerciseHistory(exerciseId: Long): Flow<List<WorkoutSetEntity>>
+    fun observeExerciseHistory(exerciseId: Long): Flow<List<ExerciseHistoryRow>>
+
+    /** Finished workouts with set count and volume, newest first. */
+    @Query(
+        """
+        SELECT s.*,
+            COUNT(ws.id) AS completed_sets,
+            COALESCE(SUM(CAST(ws.actual_weight_grams AS INTEGER) * ws.actual_reps), 0) AS volume_grams
+        FROM workout_sessions s
+        LEFT JOIN workout_sets ws ON ws.session_id = s.id AND ws.completed_at IS NOT NULL
+        WHERE s.finished_at IS NOT NULL
+        GROUP BY s.id
+        ORDER BY s.started_at DESC
+        """
+    )
+    fun observeSessionOverviews(): Flow<List<SessionOverview>>
+
+    @Query("SELECT * FROM workout_sessions WHERE finished_at IS NOT NULL ORDER BY started_at DESC LIMIT 1")
+    fun observeLastFinishedSession(): Flow<WorkoutSessionEntity?>
 }
