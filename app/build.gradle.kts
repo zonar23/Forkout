@@ -52,6 +52,11 @@ android {
     buildFeatures {
         compose = true
     }
+    androidResources {
+        // German only for now. values-en stays prepared and ships once the in-app language
+        // setting exists; otherwise the system language would switch the UI automatically.
+        localeFilters += setOf("de")
+    }
 }
 
 room {

@@ -35,7 +35,7 @@ Paketname: `io.github.zonar23.forkout`.
 
 ## Konventionen
 - **Code, Bezeichner und Kommentare auf Englisch**, damit das Projekt international beitragsfähig ist. Die Dokumentation für Nutzer darf deutsch sein.
-- **Alle UI-Texte in `strings.xml`**, niemals hartcodiert (Standard: Deutsch in `values/`, Englisch in `values-en/` vorbereiten).
+- **Alle UI-Texte in `strings.xml`**, niemals hartcodiert (Standard: Deutsch in `values/`, Englisch in `values-en/` vorbereiten). Ausgeliefert wird vorerst nur Deutsch (`localeFilters` in `app/build.gradle.kts`), unabhängig von der Systemsprache. Englisch kommt später über eine Sprachwahl in den Einstellungen.
 - Jeder Screen hat ein `UiState`-Data-Class und ein ViewModel. Composables sind möglichst zustandslos (State Hoisting).
 - **Gewichte als `Int` in Gramm** speichern, Umrechnung nur in der UI.
 - Verlaufsdaten (`WorkoutSet`) speichern Soll- und Ist-Werte als Kopie. Niemals per Fremdschlüssel auf Plan-Sätze verlassen.
@@ -71,7 +71,7 @@ Paketname: `io.github.zonar23.forkout`.
 ## Aktueller Stand
 - [x] M0 Projekt-Setup (Theme, Navigation mit Platzhaltern, Abhängigkeiten, CI mit Build, Tests und Lint)
 - [x] M1 Datenschicht (Room v1 mit Schema, DAOs, Repositories, Seed mit 8 Basis-Übungen, DataStore-Einstellungen, AMOLED-Schalter, 28 Tests)
-- [ ] M2 Übungsbibliothek
+- [x] M2 Übungsbibliothek (Liste, Suche, Filter nach Typ und Muskelgruppe, Anlegen, Bearbeiten, Archivieren und Wiederherstellen)
 - [ ] M3 Plan-Editor
 - [ ] M4 Trainingsmodus
 - [ ] M5 Verlauf & Heute

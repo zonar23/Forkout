@@ -10,8 +10,52 @@
     <!-- Placeholders (M0) -->
     <string name="today_placeholder">Your next session and weekly progress will show up here soon.</string>
     <string name="plans_placeholder">You will soon create your training plans and sessions here.</string>
-    <string name="exercises_placeholder">Your exercise library will live here soon.</string>
     <string name="history_placeholder">Your past workouts will show up here soon.</string>
+
+    <!-- Settings -->
     <string name="settings_amoled_title">AMOLED black</string>
     <string name="settings_amoled_summary">True black background, saves battery on OLED screens</string>
+
+    <!-- Exercise types -->
+    <string name="exercise_type_machine">Machine</string>
+    <string name="exercise_type_cable">Cable</string>
+    <string name="exercise_type_free_weight">Free weights</string>
+    <string name="exercise_type_bodyweight">Bodyweight</string>
+
+    <!-- Muscle groups -->
+    <string name="muscle_chest">Chest</string>
+    <string name="muscle_back">Back</string>
+    <string name="muscle_shoulders">Shoulders</string>
+    <string name="muscle_biceps">Biceps</string>
+    <string name="muscle_triceps">Triceps</string>
+    <string name="muscle_core">Core</string>
+    <string name="muscle_legs">Legs</string>
+    <string name="muscle_hamstrings">Hamstrings</string>
+    <string name="muscle_glutes">Glutes</string>
+    <string name="muscle_calves">Calves</string>
+
+    <!-- Exercise library -->
+    <string name="exercises_search">Search exercises</string>
+    <string name="exercises_clear_search">Clear search</string>
+    <string name="exercises_show_archived">Archived</string>
+    <string name="exercises_add">Add exercise</string>
+    <string name="exercises_empty">No exercises found</string>
+    <string name="exercises_archived_label">Archived</string>
+
+    <!-- Exercise editor -->
+    <string name="exercise_edit_title_new">New exercise</string>
+    <string name="exercise_edit_title">Edit exercise</string>
+    <string name="exercise_edit_save">Save</string>
+    <string name="exercise_edit_name">Name</string>
+    <string name="exercise_edit_name_required">Please enter a name</string>
+    <string name="exercise_edit_type">Type</string>
+    <string name="exercise_edit_muscle_groups">Muscle groups</string>
+    <string name="exercise_edit_setup_note">Machine setup / note</string>
+    <string name="exercise_edit_setup_note_hint">e.g. seat level 4</string>
+    <string name="exercise_edit_remove">Remove exercise</string>
+    <string name="exercise_edit_restore">Restore</string>
+    <string name="exercise_remove_dialog_title">Remove exercise?</string>
+    <string name="exercise_remove_dialog_text">If the exercise is used in a plan or in your history, it is archived instead of deleted. You can restore archived exercises at any time.</string>
+    <string name="exercise_remove_dialog_confirm">Remove</string>
+    <string name="dialog_cancel">Cancel</string>
 </resources>

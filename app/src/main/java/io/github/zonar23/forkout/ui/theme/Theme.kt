@@ -11,8 +11,9 @@ private val ForkoutColorScheme = darkColorScheme(
     onPrimaryContainer = Primary,
     secondary = Primary,
     onSecondary = OnPrimary,
-    secondaryContainer = SurfaceHigh,
-    onSecondaryContainer = OnSurface,
+    // Selected filter chips use secondaryContainer; the accent keeps them easy to spot in the gym.
+    secondaryContainer = Primary,
+    onSecondaryContainer = OnPrimary,
     tertiary = Primary,
     onTertiary = OnPrimary,
     background = Background,

@@ -44,6 +44,8 @@ fun ForkoutApp(
 
     Scaffold(
         topBar = {
+            // Detail screens such as the exercise editor bring their own top bar.
+            if (topLevel == null && !isSettings) return@Scaffold
             CenterAlignedTopAppBar(
                 title = {
                     val titleRes = when {

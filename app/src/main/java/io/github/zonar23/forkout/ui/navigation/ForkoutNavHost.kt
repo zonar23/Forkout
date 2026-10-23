@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import io.github.zonar23.forkout.ui.exercises.ExerciseEditScreen
 import io.github.zonar23.forkout.ui.exercises.ExercisesScreen
 import io.github.zonar23.forkout.ui.history.HistoryScreen
 import io.github.zonar23.forkout.ui.plans.PlansScreen
@@ -23,7 +24,16 @@ fun ForkoutNavHost(
     ) {
         composable<TodayRoute> { TodayScreen() }
         composable<PlansRoute> { PlansScreen() }
-        composable<ExercisesRoute> { ExercisesScreen() }
+        composable<ExercisesRoute> {
+            ExercisesScreen(
+                onExerciseClick = { id -> navController.navigate(ExerciseEditRoute(id)) },
+                onAddClick = { navController.navigate(ExerciseEditRoute()) },
+            )
+        }
+        composable<ExerciseEditRoute> {
+            // Pops only the editor, so a second call (back + save) cannot leave the list.
+            ExerciseEditScreen(onDone = { navController.popBackStack<ExerciseEditRoute>(inclusive = true) })
+        }
         composable<HistoryRoute> { HistoryScreen() }
         composable<SettingsRoute> { SettingsScreen() }
     }

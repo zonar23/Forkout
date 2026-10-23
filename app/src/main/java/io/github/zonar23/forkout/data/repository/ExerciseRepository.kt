@@ -21,6 +21,8 @@ class ExerciseRepository @Inject constructor(
 
     fun observe(id: Long): Flow<ExerciseEntity?> = dao.observeById(id)
 
+    suspend fun get(id: Long): ExerciseEntity? = dao.getById(id)
+
     suspend fun create(exercise: ExerciseEntity): Long = dao.insert(exercise.copy(id = 0))
 
     suspend fun update(exercise: ExerciseEntity) = dao.update(exercise)
