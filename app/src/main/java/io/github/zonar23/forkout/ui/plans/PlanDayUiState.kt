@@ -13,6 +13,10 @@ data class PlanDayUiState(
     val setEditor: SetEditorState? = null,
     /** Exercise whose remove confirmation is open. */
     val removing: PlanExerciseEntity? = null,
+    /** Name of the unfinished workout that blocks starting a new one; shows a dialog. */
+    val blockingWorkoutName: String? = null,
+    /** Set once the workout screen should open (started or resumed). */
+    val openWorkout: Boolean = false,
 ) {
     val isGone: Boolean get() = !isLoading && day == null
 }

@@ -8,6 +8,7 @@ import io.github.zonar23.forkout.data.repository.ExerciseRepository
 import io.github.zonar23.forkout.data.repository.InMemoryDataStore
 import io.github.zonar23.forkout.data.repository.PlanRepository
 import io.github.zonar23.forkout.data.repository.SettingsRepository
+import io.github.zonar23.forkout.data.repository.WorkoutRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -27,6 +28,7 @@ class PlanDayViewModelTest : DatabaseTest() {
 
     private val plans by lazy { PlanRepository(db, Clock.systemUTC()) }
     private val settings = SettingsRepository(InMemoryDataStore())
+    private val workouts by lazy { WorkoutRepository(db, Clock.systemUTC()) }
 
     private suspend fun dayWithLegPress(): Long {
         val planId = plans.createPlan("Plan", sessionsPerWeek = 3)
@@ -37,7 +39,7 @@ class PlanDayViewModelTest : DatabaseTest() {
     }
 
     private fun dayViewModel(dayId: Long) =
-        PlanDayViewModel(SavedStateHandle(mapOf("dayId" to dayId)), plans, settings)
+        PlanDayViewModel(SavedStateHandle(mapOf("dayId" to dayId)), plans, settings, workouts)
 
     /** Keeps uiState collected, since it only updates while subscribed. */
     private suspend fun PlanDayViewModel.loaded() = uiState.first { it.day != null && it.exercises.isNotEmpty() }

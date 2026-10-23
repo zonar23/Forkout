@@ -123,4 +123,39 @@
 
     <!-- Exercise picker -->
     <string name="picker_title">Choose exercise</string>
+
+    <!-- Workout -->
+    <string name="workout_start">Start workout</string>
+    <string name="workout_active_dialog_title">Workout in progress</string>
+    <string name="workout_active_dialog_text">“%1$s” has not been finished yet. Resume or finish it before starting a new one.</string>
+    <string name="workout_resume">Resume</string>
+    <string name="workout_running_banner">Workout running · %1$s</string>
+    <string name="workout_last_time">Last time: %1$s</string>
+    <string name="workout_last_set">%1$d × %2$s kg</string>
+    <string name="workout_reps">reps</string>
+    <string name="workout_weight">kg</string>
+    <string name="workout_complete_set">Complete set</string>
+    <string name="workout_set_done">Set done</string>
+    <string name="workout_set_open">Set open</string>
+    <string name="workout_sets_progress">Sets: %1$d / %2$d</string>
+    <string name="workout_finish">Finish workout</string>
+    <string name="workout_discard">Discard workout</string>
+    <string name="workout_discard_dialog_title">Discard workout?</string>
+    <string name="workout_discard_dialog_text">The workout will be discarded and not saved to your history.</string>
+    <string name="workout_discard_confirm">Discard</string>
+    <string name="workout_finish_dialog_title">Finish workout?</string>
+    <plurals name="workout_finish_dialog_text">
+        <item quantity="one">%d set is still open. Open sets are not saved.</item>
+        <item quantity="other">%d sets are still open. Open sets are not saved.</item>
+    </plurals>
+    <string name="workout_finish_confirm">Finish</string>
+    <string name="workout_rest">Rest</string>
+    <string name="workout_rest_skip">Skip</string>
+
+    <!-- Workout summary -->
+    <string name="summary_title">Well done!</string>
+    <string name="summary_duration">Duration</string>
+    <string name="summary_sets">Sets</string>
+    <string name="summary_volume">Volume (kg)</string>
+    <string name="summary_done">Done</string>
 </resources>

@@ -9,6 +9,7 @@ import io.github.zonar23.forkout.data.db.entity.PlanExerciseEntity
 import io.github.zonar23.forkout.data.db.entity.PlanSetEntity
 import io.github.zonar23.forkout.data.repository.PlanRepository
 import io.github.zonar23.forkout.data.repository.SettingsRepository
+import io.github.zonar23.forkout.data.repository.WorkoutRepository
 import io.github.zonar23.forkout.ui.components.WeightFormat
 import io.github.zonar23.forkout.ui.navigation.PlanDayRoute
 import io.github.zonar23.forkout.ui.plans.SetEditorState.Companion.MAX_REPS
@@ -28,6 +29,7 @@ class PlanDayViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: PlanRepository,
     private val settingsRepository: SettingsRepository,
+    private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
 
     private val dayId = savedStateHandle.toRoute<PlanDayRoute>().dayId
@@ -105,6 +107,27 @@ class PlanDayViewModel @Inject constructor(
             dismissSet()
         }
     }
+
+    // Workout
+
+    /** Starts a workout for this day, unless another one is still running. */
+    fun startWorkout() {
+        viewModelScope.launch {
+            val active = workoutRepository.observeActive().first()
+            if (active != null) {
+                local.update { it.copy(blockingWorkoutName = active.session.planDayName) }
+            } else {
+                workoutRepository.start(dayId)
+                local.update { it.copy(openWorkout = true) }
+            }
+        }
+    }
+
+    fun resumeBlockingWorkout() = local.update { it.copy(blockingWorkoutName = null, openWorkout = true) }
+
+    fun dismissBlockingWorkout() = local.update { it.copy(blockingWorkoutName = null) }
+
+    fun onWorkoutOpened() = local.update { it.copy(openWorkout = false) }
 
     // Removing exercises
 

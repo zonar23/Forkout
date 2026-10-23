@@ -26,6 +26,13 @@ data class PlanDayRoute(val dayId: Long)
 @Serializable
 data class ExercisePickerRoute(val dayId: Long)
 
+/** The running workout; there is at most one at a time. */
+@Serializable
+data object WorkoutRoute
+
+@Serializable
+data class WorkoutSummaryRoute(val sessionId: Long)
+
 @Serializable
 data object ExercisesRoute
 

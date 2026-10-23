@@ -73,7 +73,7 @@ Paketname: `io.github.zonar23.forkout`.
 - [x] M1 Datenschicht (Room v1 mit Schema, DAOs, Repositories, Seed mit 8 Basis-Übungen, DataStore-Einstellungen, AMOLED-Schalter, 28 Tests)
 - [x] M2 Übungsbibliothek (Liste, Suche, Filter nach Typ und Muskelgruppe, Anlegen, Bearbeiten, Archivieren und Wiederherstellen)
 - [x] M3 Plan-Editor (Pläne anlegen, bearbeiten, kopieren, löschen; Einheiten und Übungen per Drag & Drop sortieren; Sätze mit Wdh., Gewicht, Pause; Satz duplizieren, Werte auf alle Sätze übernehmen)
-- [ ] M4 Trainingsmodus
+- [x] M4 Trainingsmodus (Checkliste mit Ist-Werten per Stepper, letzte Werte, Pausentimer über Endzeitpunkt mit Vibration, Bildschirm bleibt an, Fortsetzen-Banner, Abbrechen, Zusammenfassung). Offen: Trainingsuhr pausieren
 - [ ] M5 Verlauf & Heute
 - [ ] M6 Export / Import
 - [ ] M7 Release 0.1

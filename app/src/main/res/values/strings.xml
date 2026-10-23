@@ -125,4 +125,39 @@
 
     <!-- Exercise picker -->
     <string name="picker_title">Übung auswählen</string>
+
+    <!-- Workout -->
+    <string name="workout_start">Training starten</string>
+    <string name="workout_active_dialog_title">Training läuft bereits</string>
+    <string name="workout_active_dialog_text">„%1$s“ ist noch nicht beendet. Setze es fort oder beende es, bevor du ein neues startest.</string>
+    <string name="workout_resume">Fortsetzen</string>
+    <string name="workout_running_banner">Training läuft · %1$s</string>
+    <string name="workout_last_time">Letztes Mal: %1$s</string>
+    <string name="workout_last_set">%1$d × %2$s kg</string>
+    <string name="workout_reps">Wdh.</string>
+    <string name="workout_weight">kg</string>
+    <string name="workout_complete_set">Satz abhaken</string>
+    <string name="workout_set_done">Satz erledigt</string>
+    <string name="workout_set_open">Satz offen</string>
+    <string name="workout_sets_progress">Sätze: %1$d / %2$d</string>
+    <string name="workout_finish">Training beenden</string>
+    <string name="workout_discard">Training abbrechen</string>
+    <string name="workout_discard_dialog_title">Training abbrechen?</string>
+    <string name="workout_discard_dialog_text">Das Training wird verworfen und nicht im Verlauf gespeichert.</string>
+    <string name="workout_discard_confirm">Verwerfen</string>
+    <string name="workout_finish_dialog_title">Training beenden?</string>
+    <plurals name="workout_finish_dialog_text">
+        <item quantity="one">Noch %d Satz offen. Offene Sätze werden nicht gespeichert.</item>
+        <item quantity="other">Noch %d Sätze offen. Offene Sätze werden nicht gespeichert.</item>
+    </plurals>
+    <string name="workout_finish_confirm">Beenden</string>
+    <string name="workout_rest">Pause</string>
+    <string name="workout_rest_skip">Überspringen</string>
+
+    <!-- Workout summary -->
+    <string name="summary_title">Geschafft!</string>
+    <string name="summary_duration">Dauer</string>
+    <string name="summary_sets">Sätze</string>
+    <string name="summary_volume">Volumen (kg)</string>
+    <string name="summary_done">Fertig</string>
 </resources>

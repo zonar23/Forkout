@@ -17,13 +17,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun PlanDayScreen(
     onBack: () -> Unit,
     onAddExercise: (Long) -> Unit,
+    onOpenWorkout: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlanDayViewModel = hiltViewModel(),
 ) {
@@ -73,33 +75,56 @@ fun PlanDayScreen(
     LaunchedEffect(uiState.isGone) {
         if (uiState.isGone) onBack()
     }
+    LaunchedEffect(uiState.openWorkout) {
+        if (uiState.openWorkout) {
+            viewModel.onWorkoutOpened()
+            onOpenWorkout()
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         DetailTopBar(title = day?.name.orEmpty(), onBack = onBack)
         if (day == null) return@Column
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.weight(1f)) {
             ExerciseList(
                 exercises = uiState.exercises,
                 onReorder = viewModel::onReorder,
                 onSetClick = viewModel::openSet,
                 onAddSet = viewModel::addSet,
                 onRemove = viewModel::startRemove,
+                onAddExercise = { onAddExercise(day.id) },
             )
-            FloatingActionButton(
-                onClick = { onAddExercise(day.id) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_add),
-                    contentDescription = stringResource(R.string.day_add_exercise),
-                )
-            }
         }
+        Button(
+            onClick = viewModel::startWorkout,
+            enabled = uiState.exercises.isNotEmpty(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .heightIn(min = 56.dp),
+        ) {
+            Icon(painterResource(R.drawable.ic_play_arrow), contentDescription = null)
+            Text(stringResource(R.string.workout_start), modifier = Modifier.padding(start = 8.dp))
+        }
+    }
+
+    uiState.blockingWorkoutName?.let { name ->
+        AlertDialog(
+            onDismissRequest = viewModel::dismissBlockingWorkout,
+            title = { Text(stringResource(R.string.workout_active_dialog_title)) },
+            text = { Text(stringResource(R.string.workout_active_dialog_text, name)) },
+            confirmButton = {
+                TextButton(onClick = viewModel::resumeBlockingWorkout) {
+                    Text(stringResource(R.string.workout_resume))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissBlockingWorkout) {
+                    Text(stringResource(R.string.dialog_cancel))
+                }
+            },
+        )
     }
 
     uiState.setEditor?.let { editor ->
@@ -135,6 +160,7 @@ private fun ExerciseList(
     onSetClick: (set: PlanSetEntity, setNumber: Int, setCount: Int) -> Unit,
     onAddSet: (Long) -> Unit,
     onRemove: (PlanExerciseEntity) -> Unit,
+    onAddExercise: () -> Unit,
 ) {
     var items by remember(exercises) { mutableStateOf(exercises) }
     val listState = rememberLazyListState()
@@ -146,22 +172,21 @@ private fun ExerciseList(
         }
     }
 
-    if (items.isEmpty()) {
-        Text(
-            text = stringResource(R.string.day_exercises_empty),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(16.dp),
-        )
-        return
-    }
-
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
+        if (items.isEmpty()) {
+            item(key = "empty") {
+                Text(
+                    text = stringResource(R.string.day_exercises_empty),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         items(items, key = { it.planExercise.id }) { item ->
             ReorderableItem(reorderState, key = item.planExercise.id) { isDragging ->
                 Card(
@@ -220,6 +245,17 @@ private fun ExerciseList(
                         Text(stringResource(R.string.day_add_set), modifier = Modifier.padding(start = 8.dp))
                     }
                 }
+            }
+        }
+        item(key = "add") {
+            OutlinedButton(
+                onClick = onAddExercise,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp),
+            ) {
+                Icon(painterResource(R.drawable.ic_add), contentDescription = null)
+                Text(stringResource(R.string.day_add_exercise), modifier = Modifier.padding(start = 8.dp))
             }
         }
     }

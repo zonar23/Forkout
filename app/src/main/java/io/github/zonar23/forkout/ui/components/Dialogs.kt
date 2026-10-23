@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import io.github.zonar23.forkout.R
 
 /** Confirmation for destructive actions; the confirm button uses the error color. */
@@ -29,6 +30,7 @@ fun ConfirmDeleteDialog(
     text: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    confirmLabel: String = stringResource(R.string.dialog_delete),
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -36,7 +38,7 @@ fun ConfirmDeleteDialog(
         text = { Text(text) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.dialog_delete), color = MaterialTheme.colorScheme.error)
+                Text(confirmLabel, color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
@@ -53,6 +55,8 @@ fun TextInputDialog(
     onValueChange: (String) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isValid: Boolean = value.isNotBlank(),
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -62,11 +66,15 @@ fun TextInputDialog(
                 value = value,
                 onValueChange = onValueChange,
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                isError = !isValid,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = keyboardType,
+                ),
             )
         },
         confirmButton = {
-            TextButton(onClick = onConfirm, enabled = value.isNotBlank()) {
+            TextButton(onClick = onConfirm, enabled = isValid) {
                 Text(stringResource(R.string.dialog_save))
             }
         },

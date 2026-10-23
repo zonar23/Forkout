@@ -16,6 +16,8 @@ import io.github.zonar23.forkout.ui.plans.PlanEditScreen
 import io.github.zonar23.forkout.ui.plans.PlansScreen
 import io.github.zonar23.forkout.ui.settings.SettingsScreen
 import io.github.zonar23.forkout.ui.today.TodayScreen
+import io.github.zonar23.forkout.ui.workout.WorkoutScreen
+import io.github.zonar23.forkout.ui.workout.WorkoutSummaryScreen
 
 // Detail screens pop their own route instead of calling popBackStack(), so a second call
 // (e.g. back pressed while a save finishes) cannot remove the screen below.
@@ -70,10 +72,26 @@ fun ForkoutNavHost(
             PlanDayScreen(
                 onBack = { navController.popBackStack<PlanDayRoute>(inclusive = true) },
                 onAddExercise = { dayId -> navController.navigate(ExercisePickerRoute(dayId)) },
+                onOpenWorkout = { navController.navigate(WorkoutRoute) { launchSingleTop = true } },
             )
         }
         composable<ExercisePickerRoute> {
             ExercisePickerScreen(onDone = { navController.popBackStack<ExercisePickerRoute>(inclusive = true) })
+        }
+
+        composable<WorkoutRoute> {
+            WorkoutScreen(
+                // Leaving keeps the workout running; it can be resumed from the banner.
+                onClose = { navController.popBackStack<WorkoutRoute>(inclusive = true) },
+                onFinished = { sessionId ->
+                    navController.navigate(WorkoutSummaryRoute(sessionId)) {
+                        popUpTo<WorkoutRoute> { inclusive = true }
+                    }
+                },
+            )
+        }
+        composable<WorkoutSummaryRoute> {
+            WorkoutSummaryScreen(onDone = { navController.popBackStack<WorkoutSummaryRoute>(inclusive = true) })
         }
 
         composable<ExercisesRoute> {
