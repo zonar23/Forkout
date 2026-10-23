@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Forkout</string>
+
+    <!-- Navigation -->
+    <string name="nav_today">Heute</string>
+    <string name="nav_plans">Pläne</string>
+    <string name="nav_exercises">Übungen</string>
+    <string name="nav_history">Verlauf</string>
+    <string name="nav_settings">Einstellungen</string>
+    <string name="nav_back">Zurück</string>
+
+    <!-- Placeholders (M0) -->
+    <string name="today_placeholder">Hier erscheint bald deine nächste Einheit und dein Wochenfortschritt.</string>
+    <string name="plans_placeholder">Hier legst du bald deine Trainingspläne und Einheiten an.</string>
+    <string name="exercises_placeholder">Hier findest du bald deine Übungsbibliothek.</string>
+    <string name="history_placeholder">Hier siehst du bald deine vergangenen Trainings.</string>
+    <string name="settings_placeholder">Hier findest du bald Export, Import und weitere Einstellungen.</string>
 </resources>

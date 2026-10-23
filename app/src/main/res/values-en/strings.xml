@@ -1,0 +1,16 @@
+<resources>
+    <!-- Navigation -->
+    <string name="nav_today">Today</string>
+    <string name="nav_plans">Plans</string>
+    <string name="nav_exercises">Exercises</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_back">Back</string>
+
+    <!-- Placeholders (M0) -->
+    <string name="today_placeholder">Your next session and weekly progress will show up here soon.</string>
+    <string name="plans_placeholder">You will soon create your training plans and sessions here.</string>
+    <string name="exercises_placeholder">Your exercise library will live here soon.</string>
+    <string name="history_placeholder">Your past workouts will show up here soon.</string>
+    <string name="settings_placeholder">Export, import and more settings will be available here soon.</string>
+</resources>

@@ -67,7 +67,7 @@ Paketname: `io.github.<github-user>.forkout` (Platzhalter, beim Setup festlegen)
 - Meilensteine siehe `docs/KONZEPT.md`, Abschnitt 10. Aktuellen Stand unten pflegen.
 
 ## Aktueller Stand
-- [ ] M0 Projekt-Setup
+- [ ] M0 Projekt-Setup – erledigt: Abhängigkeiten (Hilt, Room, DataStore, Navigation, Serialization), Forkout-Theme, Bottom-Navigation mit Platzhalter-Screens, minSdk 26. Offen: CI (GitHub Actions), endgültiger Paketname (aktuell noch `com.example.forkout`)
 - [ ] M1 Datenschicht
 - [ ] M2 Übungsbibliothek
 - [ ] M3 Plan-Editor
