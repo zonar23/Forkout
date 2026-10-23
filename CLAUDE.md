@@ -72,7 +72,7 @@ Paketname: `io.github.zonar23.forkout`.
 - [x] M0 Projekt-Setup (Theme, Navigation mit Platzhaltern, Abhängigkeiten, CI mit Build, Tests und Lint)
 - [x] M1 Datenschicht (Room v1 mit Schema, DAOs, Repositories, Seed mit 8 Basis-Übungen, DataStore-Einstellungen, AMOLED-Schalter, 28 Tests)
 - [x] M2 Übungsbibliothek (Liste, Suche, Filter nach Typ und Muskelgruppe, Anlegen, Bearbeiten, Archivieren und Wiederherstellen)
-- [ ] M3 Plan-Editor
+- [x] M3 Plan-Editor (Pläne anlegen, bearbeiten, kopieren, löschen; Einheiten und Übungen per Drag & Drop sortieren; Sätze mit Wdh., Gewicht, Pause; Satz duplizieren, Werte auf alle Sätze übernehmen)
 - [ ] M4 Trainingsmodus
 - [ ] M5 Verlauf & Heute
 - [ ] M6 Export / Import

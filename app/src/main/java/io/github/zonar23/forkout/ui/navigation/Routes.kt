@@ -8,6 +8,24 @@ data object TodayRoute
 @Serializable
 data object PlansRoute
 
+/** Creates a new plan when [planId] is [NEW_ID], otherwise edits the existing one. */
+@Serializable
+data class PlanEditRoute(val planId: Long = NEW_ID) {
+    companion object {
+        const val NEW_ID = 0L
+    }
+}
+
+@Serializable
+data class PlanDetailRoute(val planId: Long)
+
+@Serializable
+data class PlanDayRoute(val dayId: Long)
+
+/** Picks an exercise from the library and appends it to the plan day [dayId]. */
+@Serializable
+data class ExercisePickerRoute(val dayId: Long)
+
 @Serializable
 data object ExercisesRoute
 

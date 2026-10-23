@@ -10,6 +10,7 @@ import io.github.zonar23.forkout.data.db.entity.PlanDayEntity
 import io.github.zonar23.forkout.data.db.entity.PlanEntity
 import io.github.zonar23.forkout.data.db.entity.PlanExerciseEntity
 import io.github.zonar23.forkout.data.db.entity.PlanSetEntity
+import io.github.zonar23.forkout.data.db.relation.DayExerciseCount
 import io.github.zonar23.forkout.data.db.relation.PlanDayWithExercises
 import io.github.zonar23.forkout.data.db.relation.PlanWithDays
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,9 @@ interface PlanDao {
     @Transaction
     @Query("SELECT * FROM plans WHERE id = :id")
     fun observePlanWithDays(id: Long): Flow<PlanWithDays?>
+
+    @Query("SELECT * FROM plans WHERE id = :id")
+    suspend fun getPlan(id: Long): PlanEntity?
 
     @Insert
     suspend fun insertPlan(plan: PlanEntity): Long
@@ -48,6 +52,23 @@ interface PlanDao {
     @Query("SELECT COUNT(*) FROM plan_days WHERE plan_id = :planId")
     suspend fun countDays(planId: Long): Int
 
+    @Query("SELECT * FROM plan_days WHERE plan_id = :planId ORDER BY position")
+    suspend fun getDays(planId: Long): List<PlanDayEntity>
+
+    @Query("SELECT * FROM plan_days WHERE id = :id")
+    suspend fun getDay(id: Long): PlanDayEntity?
+
+    /** Number of exercises per day of [planId]; days without exercises are missing. */
+    @Query(
+        """
+        SELECT pe.plan_day_id, COUNT(*) AS count FROM plan_exercises pe
+        JOIN plan_days d ON d.id = pe.plan_day_id
+        WHERE d.plan_id = :planId
+        GROUP BY pe.plan_day_id
+        """
+    )
+    fun observeExerciseCounts(planId: Long): Flow<List<DayExerciseCount>>
+
     @Insert
     suspend fun insertDay(day: PlanDayEntity): Long
 
@@ -62,6 +83,9 @@ interface PlanDao {
     @Query("SELECT COUNT(*) FROM plan_exercises WHERE plan_day_id = :dayId")
     suspend fun countPlanExercises(dayId: Long): Int
 
+    @Query("SELECT * FROM plan_exercises WHERE plan_day_id = :dayId ORDER BY position")
+    suspend fun getPlanExercises(dayId: Long): List<PlanExerciseEntity>
+
     @Insert
     suspend fun insertPlanExercise(planExercise: PlanExerciseEntity): Long
 
@@ -72,6 +96,9 @@ interface PlanDao {
     suspend fun deletePlanExercise(planExercise: PlanExerciseEntity)
 
     // Sets
+
+    @Query("SELECT * FROM plan_sets WHERE plan_exercise_id = :planExerciseId ORDER BY position")
+    suspend fun getSets(planExerciseId: Long): List<PlanSetEntity>
 
     @Insert
     suspend fun insertSets(sets: List<PlanSetEntity>): List<Long>

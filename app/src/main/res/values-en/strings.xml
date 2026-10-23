@@ -9,7 +9,6 @@
 
     <!-- Placeholders (M0) -->
     <string name="today_placeholder">Your next session and weekly progress will show up here soon.</string>
-    <string name="plans_placeholder">You will soon create your training plans and sessions here.</string>
     <string name="history_placeholder">Your past workouts will show up here soon.</string>
 
     <!-- Settings -->
@@ -58,4 +57,70 @@
     <string name="exercise_remove_dialog_text">If the exercise is used in a plan or in your history, it is archived instead of deleted. You can restore archived exercises at any time.</string>
     <string name="exercise_remove_dialog_confirm">Remove</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_save">Save</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="more_options">More options</string>
+    <string name="drag_to_reorder">Drag to reorder</string>
+    <string name="stepper_decrease">Decrease</string>
+    <string name="stepper_increase">Increase</string>
+
+    <!-- Plans -->
+    <string name="plans_empty">No plans yet. Tap + to create your first plan.</string>
+    <string name="plans_add">Add plan</string>
+    <string name="plans_sessions_per_week">%1$d× per week</string>
+
+    <!-- Plan editor -->
+    <string name="plan_edit_title_new">New plan</string>
+    <string name="plan_edit_title">Edit plan</string>
+    <string name="plan_edit_name">Name</string>
+    <string name="plan_edit_name_hint">e.g. Coach plan autumn 2026</string>
+    <string name="plan_edit_name_required">Please enter a name</string>
+    <string name="plan_edit_goal">Goal</string>
+    <string name="plan_edit_goal_hint">e.g. Muscle gain</string>
+    <string name="plan_edit_sessions">Sessions per week</string>
+    <string name="plan_edit_note">Note</string>
+    <string name="plan_edit_delete">Delete plan</string>
+    <string name="plan_delete_dialog_title">Delete plan?</string>
+    <string name="plan_delete_dialog_text">The plan and all its sessions will be deleted. Completed workouts stay in your history.</string>
+
+    <!-- Plan detail -->
+    <string name="plan_detail_edit">Edit plan</string>
+    <string name="plan_detail_copy">Copy plan</string>
+    <string name="copy_name_suffix">%1$s (copy)</string>
+    <string name="plan_days_title">Sessions</string>
+    <string name="plan_day_add">Add session</string>
+    <string name="plan_days_empty">No sessions yet. Tap + to add your first session.</string>
+    <string name="plan_day_default_name">Session %1$s</string>
+    <plurals name="plan_day_exercise_count">
+        <item quantity="one">%d exercise</item>
+        <item quantity="other">%d exercises</item>
+    </plurals>
+    <string name="plan_day_rename">Rename</string>
+    <string name="plan_day_copy">Copy</string>
+    <string name="plan_day_delete">Delete</string>
+    <string name="plan_day_rename_title">Rename session</string>
+    <string name="plan_day_delete_dialog_title">Delete session?</string>
+    <string name="plan_day_delete_dialog_text">The session and all its exercises and sets will be deleted. Completed workouts stay in your history.</string>
+
+    <!-- Plan day editor -->
+    <string name="day_exercises_empty">No exercises yet. Tap + to add one.</string>
+    <string name="day_add_exercise">Add exercise</string>
+    <string name="day_add_set">Add set</string>
+    <string name="day_remove_exercise">Remove exercise</string>
+    <plurals name="day_set_reps">
+        <item quantity="one">%d rep</item>
+        <item quantity="other">%d reps</item>
+    </plurals>
+    <string name="day_set_weight">%1$s kg</string>
+
+    <!-- Set editor -->
+    <string name="set_edit_title">Set %1$d</string>
+    <string name="set_edit_reps">Reps</string>
+    <string name="set_edit_weight">Weight (kg)</string>
+    <string name="set_edit_rest">Rest (seconds)</string>
+    <string name="set_edit_apply_all">Apply to all sets</string>
+    <string name="set_edit_delete">Delete set</string>
+
+    <!-- Exercise picker -->
+    <string name="picker_title">Choose exercise</string>
 </resources>

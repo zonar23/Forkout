@@ -87,6 +87,7 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.reorderable)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.testing)

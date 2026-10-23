@@ -1,6 +1,8 @@
 package io.github.zonar23.forkout.ui.plans
 
-/** Placeholder state; filled with real data in a later milestone. */
+import io.github.zonar23.forkout.data.db.entity.PlanEntity
+
 data class PlansUiState(
-    val isLoading: Boolean = false,
+    val plans: List<PlanEntity> = emptyList(),
+    val isLoading: Boolean = true,
 )

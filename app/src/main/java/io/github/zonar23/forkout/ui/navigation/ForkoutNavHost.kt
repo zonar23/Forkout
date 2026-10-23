@@ -8,9 +8,17 @@ import androidx.navigation.compose.composable
 import io.github.zonar23.forkout.ui.exercises.ExerciseEditScreen
 import io.github.zonar23.forkout.ui.exercises.ExercisesScreen
 import io.github.zonar23.forkout.ui.history.HistoryScreen
+import io.github.zonar23.forkout.ui.plans.ExercisePickerScreen
+import io.github.zonar23.forkout.ui.plans.PlanDayScreen
+import io.github.zonar23.forkout.ui.plans.PlanDetailScreen
+import io.github.zonar23.forkout.ui.plans.PlanEditResult
+import io.github.zonar23.forkout.ui.plans.PlanEditScreen
 import io.github.zonar23.forkout.ui.plans.PlansScreen
 import io.github.zonar23.forkout.ui.settings.SettingsScreen
 import io.github.zonar23.forkout.ui.today.TodayScreen
+
+// Detail screens pop their own route instead of calling popBackStack(), so a second call
+// (e.g. back pressed while a save finishes) cannot remove the screen below.
 
 @Composable
 fun ForkoutNavHost(
@@ -23,7 +31,51 @@ fun ForkoutNavHost(
         modifier = modifier,
     ) {
         composable<TodayRoute> { TodayScreen() }
-        composable<PlansRoute> { PlansScreen() }
+
+        composable<PlansRoute> {
+            PlansScreen(
+                onPlanClick = { id -> navController.navigate(PlanDetailRoute(id)) },
+                onAddClick = { navController.navigate(PlanEditRoute()) },
+            )
+        }
+        composable<PlanEditRoute> {
+            PlanEditScreen(
+                onBack = { navController.popBackStack<PlanEditRoute>(inclusive = true) },
+                onResult = { result ->
+                    when (result) {
+                        is PlanEditResult.Created -> navController.navigate(PlanDetailRoute(result.planId)) {
+                            popUpTo<PlanEditRoute> { inclusive = true }
+                        }
+                        PlanEditResult.Saved, PlanEditResult.NotFound ->
+                            navController.popBackStack<PlanEditRoute>(inclusive = true)
+                        PlanEditResult.Deleted -> navController.popBackStack<PlansRoute>(inclusive = false)
+                    }
+                },
+            )
+        }
+        composable<PlanDetailRoute> {
+            PlanDetailScreen(
+                onBack = { navController.popBackStack<PlanDetailRoute>(inclusive = true) },
+                onEditPlan = { id -> navController.navigate(PlanEditRoute(id)) },
+                onOpenDay = { id -> navController.navigate(PlanDayRoute(id)) },
+                // A copied plan replaces the current detail screen.
+                onOpenPlan = { id ->
+                    navController.navigate(PlanDetailRoute(id)) {
+                        popUpTo<PlanDetailRoute> { inclusive = true }
+                    }
+                },
+            )
+        }
+        composable<PlanDayRoute> {
+            PlanDayScreen(
+                onBack = { navController.popBackStack<PlanDayRoute>(inclusive = true) },
+                onAddExercise = { dayId -> navController.navigate(ExercisePickerRoute(dayId)) },
+            )
+        }
+        composable<ExercisePickerRoute> {
+            ExercisePickerScreen(onDone = { navController.popBackStack<ExercisePickerRoute>(inclusive = true) })
+        }
+
         composable<ExercisesRoute> {
             ExercisesScreen(
                 onExerciseClick = { id -> navController.navigate(ExerciseEditRoute(id)) },
@@ -31,9 +83,9 @@ fun ForkoutNavHost(
             )
         }
         composable<ExerciseEditRoute> {
-            // Pops only the editor, so a second call (back + save) cannot leave the list.
             ExerciseEditScreen(onDone = { navController.popBackStack<ExerciseEditRoute>(inclusive = true) })
         }
+
         composable<HistoryRoute> { HistoryScreen() }
         composable<SettingsRoute> { SettingsScreen() }
     }

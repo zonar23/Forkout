@@ -1,5 +1,6 @@
 package io.github.zonar23.forkout.data.db.relation
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Relation
 import io.github.zonar23.forkout.data.db.entity.ExerciseEntity
@@ -16,6 +17,11 @@ data class PlanWithDays(
     @Embedded val plan: PlanEntity,
     @Relation(parentColumn = "id", entityColumn = "plan_id")
     val days: List<PlanDayEntity>,
+)
+
+data class DayExerciseCount(
+    @ColumnInfo(name = "plan_day_id") val dayId: Long,
+    val count: Int,
 )
 
 data class PlanExerciseWithDetails(

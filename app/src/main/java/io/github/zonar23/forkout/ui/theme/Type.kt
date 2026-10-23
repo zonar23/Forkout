@@ -46,4 +46,11 @@ object NumberTextStyles {
         lineHeight = 28.sp,
         fontFeatureSettings = TABULAR_NUMBERS,
     )
+    val small = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        fontFeatureSettings = TABULAR_NUMBERS,
+    )
 }

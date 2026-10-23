@@ -3,7 +3,6 @@ package io.github.zonar23.forkout.ui.exercises
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -14,8 +13,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +21,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.zonar23.forkout.R
 import io.github.zonar23.forkout.data.db.model.ExerciseType
 import io.github.zonar23.forkout.data.db.model.MuscleGroup
+import io.github.zonar23.forkout.ui.components.DetailTopBar
 import io.github.zonar23.forkout.ui.components.labelRes
 import io.github.zonar23.forkout.ui.theme.ForkoutTheme
 
@@ -72,7 +69,6 @@ fun ExerciseEditScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExerciseEditContent(
     uiState: ExerciseEditUiState,
@@ -87,22 +83,11 @@ private fun ExerciseEditContent(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    stringResource(
-                        if (uiState.isNew) R.string.exercise_edit_title_new else R.string.exercise_edit_title
-                    )
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(R.string.nav_back),
-                    )
-                }
-            },
+        DetailTopBar(
+            title = stringResource(
+                if (uiState.isNew) R.string.exercise_edit_title_new else R.string.exercise_edit_title
+            ),
+            onBack = onBack,
             actions = {
                 IconButton(onClick = onSave, enabled = !uiState.isLoading) {
                     Icon(
@@ -112,11 +97,6 @@ private fun ExerciseEditContent(
                     )
                 }
             },
-            // The app scaffold already applies the status bar inset.
-            windowInsets = WindowInsets(0),
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background,
-            ),
         )
 
         if (uiState.isLoading) return@Column

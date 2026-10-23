@@ -11,7 +11,6 @@
 
     <!-- Placeholders (M0) -->
     <string name="today_placeholder">Hier erscheint bald deine nächste Einheit und dein Wochenfortschritt.</string>
-    <string name="plans_placeholder">Hier legst du bald deine Trainingspläne und Einheiten an.</string>
     <string name="history_placeholder">Hier siehst du bald deine vergangenen Trainings.</string>
 
     <!-- Settings -->
@@ -60,4 +59,70 @@
     <string name="exercise_remove_dialog_text">Wird die Übung in einem Plan oder im Verlauf verwendet, wird sie archiviert statt gelöscht. Archivierte Übungen kannst du jederzeit wiederherstellen.</string>
     <string name="exercise_remove_dialog_confirm">Entfernen</string>
     <string name="dialog_cancel">Abbrechen</string>
+    <string name="dialog_save">Speichern</string>
+    <string name="dialog_delete">Löschen</string>
+    <string name="more_options">Weitere Optionen</string>
+    <string name="drag_to_reorder">Zum Sortieren ziehen</string>
+    <string name="stepper_decrease">Weniger</string>
+    <string name="stepper_increase">Mehr</string>
+
+    <!-- Plans -->
+    <string name="plans_empty">Noch keine Pläne. Lege mit + deinen ersten Plan an.</string>
+    <string name="plans_add">Plan anlegen</string>
+    <string name="plans_sessions_per_week">%1$d× pro Woche</string>
+
+    <!-- Plan editor -->
+    <string name="plan_edit_title_new">Neuer Plan</string>
+    <string name="plan_edit_title">Plan bearbeiten</string>
+    <string name="plan_edit_name">Name</string>
+    <string name="plan_edit_name_hint">z. B. Coach-Plan Herbst 2026</string>
+    <string name="plan_edit_name_required">Bitte einen Namen eingeben</string>
+    <string name="plan_edit_goal">Ziel</string>
+    <string name="plan_edit_goal_hint">z. B. Muskelaufbau</string>
+    <string name="plan_edit_sessions">Einheiten pro Woche</string>
+    <string name="plan_edit_note">Notiz</string>
+    <string name="plan_edit_delete">Plan löschen</string>
+    <string name="plan_delete_dialog_title">Plan löschen?</string>
+    <string name="plan_delete_dialog_text">Der Plan wird mit allen Einheiten gelöscht. Bereits absolvierte Trainings bleiben im Verlauf erhalten.</string>
+
+    <!-- Plan detail -->
+    <string name="plan_detail_edit">Plan bearbeiten</string>
+    <string name="plan_detail_copy">Plan kopieren</string>
+    <string name="copy_name_suffix">%1$s (Kopie)</string>
+    <string name="plan_days_title">Einheiten</string>
+    <string name="plan_day_add">Einheit hinzufügen</string>
+    <string name="plan_days_empty">Noch keine Einheiten. Füge mit + deine erste Einheit hinzu.</string>
+    <string name="plan_day_default_name">Einheit %1$s</string>
+    <plurals name="plan_day_exercise_count">
+        <item quantity="one">%d Übung</item>
+        <item quantity="other">%d Übungen</item>
+    </plurals>
+    <string name="plan_day_rename">Umbenennen</string>
+    <string name="plan_day_copy">Kopieren</string>
+    <string name="plan_day_delete">Löschen</string>
+    <string name="plan_day_rename_title">Einheit umbenennen</string>
+    <string name="plan_day_delete_dialog_title">Einheit löschen?</string>
+    <string name="plan_day_delete_dialog_text">Die Einheit wird mit allen Übungen und Sätzen gelöscht. Bereits absolvierte Trainings bleiben im Verlauf erhalten.</string>
+
+    <!-- Plan day editor -->
+    <string name="day_exercises_empty">Noch keine Übungen. Füge mit + eine Übung hinzu.</string>
+    <string name="day_add_exercise">Übung hinzufügen</string>
+    <string name="day_add_set">Satz hinzufügen</string>
+    <string name="day_remove_exercise">Übung entfernen</string>
+    <plurals name="day_set_reps">
+        <item quantity="one">%d Wdh.</item>
+        <item quantity="other">%d Wdh.</item>
+    </plurals>
+    <string name="day_set_weight">%1$s kg</string>
+
+    <!-- Set editor -->
+    <string name="set_edit_title">Satz %1$d</string>
+    <string name="set_edit_reps">Wiederholungen</string>
+    <string name="set_edit_weight">Gewicht (kg)</string>
+    <string name="set_edit_rest">Pause (Sekunden)</string>
+    <string name="set_edit_apply_all">Auf alle Sätze übernehmen</string>
+    <string name="set_edit_delete">Satz löschen</string>
+
+    <!-- Exercise picker -->
+    <string name="picker_title">Übung auswählen</string>
 </resources>
