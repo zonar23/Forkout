@@ -30,7 +30,7 @@ app/src/main/java/<package>/
                  // je Feature: Screen + ViewModel + UiState
   di/            // Hilt-Module
 ```
-Paketname: `io.github.<github-user>.forkout` (Platzhalter, beim Setup festlegen).
+Paketname: `io.github.zonar23.forkout`.
 
 ## Konventionen
 - **Code, Bezeichner und Kommentare auf Englisch**, damit das Projekt international beitragsfähig ist. Die Dokumentation für Nutzer darf deutsch sein.
@@ -67,7 +67,7 @@ Paketname: `io.github.<github-user>.forkout` (Platzhalter, beim Setup festlegen)
 - Meilensteine siehe `docs/KONZEPT.md`, Abschnitt 10. Aktuellen Stand unten pflegen.
 
 ## Aktueller Stand
-- [ ] M0 Projekt-Setup – erledigt: Abhängigkeiten (Hilt, Room, DataStore, Navigation, Serialization), Forkout-Theme, Bottom-Navigation mit Platzhalter-Screens, minSdk 26. Offen: CI (GitHub Actions), endgültiger Paketname (aktuell noch `com.example.forkout`)
+- [x] M0 Projekt-Setup (Theme, Navigation mit Platzhaltern, Abhängigkeiten, CI mit Build, Tests und Lint)
 - [ ] M1 Datenschicht
 - [ ] M2 Übungsbibliothek
 - [ ] M3 Plan-Editor

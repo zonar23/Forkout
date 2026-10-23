@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.forkout"
+    namespace = "io.github.zonar23.forkout"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.forkout"
+        applicationId = "io.github.zonar23.forkout"
         minSdk = 26
         targetSdk = 37
         versionCode = 1

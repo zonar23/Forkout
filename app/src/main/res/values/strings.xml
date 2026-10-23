@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Forkout</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="de">
+    <string name="app_name" translatable="false">Forkout</string>
 
     <!-- Navigation -->
     <string name="nav_today">Heute</string>
