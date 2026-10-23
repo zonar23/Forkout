@@ -14,5 +14,6 @@
     <string name="plans_placeholder">Hier legst du bald deine Trainingspläne und Einheiten an.</string>
     <string name="exercises_placeholder">Hier findest du bald deine Übungsbibliothek.</string>
     <string name="history_placeholder">Hier siehst du bald deine vergangenen Trainings.</string>
-    <string name="settings_placeholder">Hier findest du bald Export, Import und weitere Einstellungen.</string>
+    <string name="settings_amoled_title">AMOLED-Schwarz</string>
+    <string name="settings_amoled_summary">Echtes Schwarz als Hintergrund, spart Akku auf OLED-Displays</string>
 </resources>

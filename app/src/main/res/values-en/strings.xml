@@ -12,5 +12,6 @@
     <string name="plans_placeholder">You will soon create your training plans and sessions here.</string>
     <string name="exercises_placeholder">Your exercise library will live here soon.</string>
     <string name="history_placeholder">Your past workouts will show up here soon.</string>
-    <string name="settings_placeholder">Export, import and more settings will be available here soon.</string>
+    <string name="settings_amoled_title">AMOLED black</string>
+    <string name="settings_amoled_summary">True black background, saves battery on OLED screens</string>
 </resources>

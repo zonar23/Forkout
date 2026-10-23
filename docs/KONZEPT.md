@@ -145,24 +145,27 @@ PlanSet
   id, planExerciseId, position, targetReps, targetWeightGrams, restSeconds
 
 WorkoutSession
-  id, planDayId (nullable), startedAt, finishedAt, note
+  id, planDayId (nullable), planDayName (Kopie), startedAt, finishedAt (nullable = läuft), note
 
 WorkoutSet
-  id, sessionId, exerciseId, setIndex,
-  targetReps, targetWeightGrams,
-  actualReps, actualWeightGrams, rir (nullable), completedAt
+  id, sessionId, exerciseId, exercisePosition, setIndex,
+  targetReps, targetWeightGrams, restSeconds,
+  actualReps, actualWeightGrams, rir (nullable), completedAt (nullable = offen)
 ```
+
+Muskelgruppen sind eine feste Liste (Brust, Rücken, Schultern, Bizeps, Trizeps, Rumpf, Beine, Beinbeuger, Gesäß, Waden) und werden direkt an der Übung gespeichert.
 
 Designentscheidungen:
 - **Gewichte als Ganzzahl in Gramm**, um Rundungsfehler bei Kommazahlen (z. B. 7,5 kg) zu vermeiden
 - **WorkoutSet speichert Soll und Ist als Kopie**, damit spätere Planänderungen den Verlauf nicht verfälschen
+- **WorkoutSession speichert den Namen der Einheit als Kopie**, damit der Verlauf lesbar bleibt, auch wenn der Plan gelöscht wird
 - Übungen werden archiviert und nie hart gelöscht, solange es Verlaufseinträge gibt
 
 ---
 
 ## 7. Mitgelieferte Basis-Übungen (Seed)
 
-Generische Namen ohne Marken- oder Gerätebezeichnungen eines Herstellers:
+Generische deutsche Namen ohne Marken- oder Gerätebezeichnungen eines Herstellers. Die Namen sind Daten in der Datenbank und werden nicht übersetzt:
 
 | Übung | Typ | Muskelgruppen |
 |---|---|---|
@@ -173,6 +176,7 @@ Generische Namen ohne Marken- oder Gerätebezeichnungen eines Herstellers:
 | Beinbeuger | Maschine | Beinbeuger |
 | Brustpresse | Maschine | Brust, Trizeps, Schulter |
 | Kabelzug tief mit Rotation | Kabelzug | Rumpf, Rücken |
+| Bauchtrainer | Maschine | Rumpf |
 
 Erweiterbar um gängige Grundübungen (Kniebeuge, Kreuzheben, Bankdrücken, Rudern, Schulterdrücken …).
 

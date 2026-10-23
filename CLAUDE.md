@@ -12,6 +12,7 @@ Forkout ist eine offline-first Open-Source-App für Android (MIT), mit der man T
 - Room (Datenbank), DataStore (Einstellungen)
 - Hilt (DI), Navigation Compose mit typsicheren Routen
 - kotlinx.serialization für JSON-Export/-Import
+- Tests: JUnit + Robolectric (Room-Tests laufen ohne Emulator in `./gradlew test`)
 - Gradle Kotlin DSL + Version Catalog (`gradle/libs.versions.toml`)
 - minSdk 26, targetSdk = aktuelles stabiles SDK
 
@@ -59,6 +60,7 @@ Paketname: `io.github.zonar23.forkout`.
 - **Keine Herstellermarken** (z. B. Gerätehersteller-Namen) in Seed-Daten, Grafiken oder Texten
 - Keine fremden Fotos. Icons und Grafiken sind selbst erstellt oder frei lizenziert (Material Symbols ist ok).
 - Persönliche Trainingspläne gehören nie ins Repository
+- Namen der Basis-Übungen sind deutsch und werden als Daten gespeichert, nicht übersetzt
 
 ## Arbeitsweise mit Claude
 - In kleinen, überprüfbaren Schritten arbeiten. Jeder Schritt muss bauen (`./gradlew assembleDebug`).
@@ -68,7 +70,7 @@ Paketname: `io.github.zonar23.forkout`.
 
 ## Aktueller Stand
 - [x] M0 Projekt-Setup (Theme, Navigation mit Platzhaltern, Abhängigkeiten, CI mit Build, Tests und Lint)
-- [ ] M1 Datenschicht
+- [x] M1 Datenschicht (Room v1 mit Schema, DAOs, Repositories, Seed mit 8 Basis-Übungen, DataStore-Einstellungen, AMOLED-Schalter, 28 Tests)
 - [ ] M2 Übungsbibliothek
 - [ ] M3 Plan-Editor
 - [ ] M4 Trainingsmodus

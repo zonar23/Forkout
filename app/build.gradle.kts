@@ -35,6 +35,20 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions {
+        unitTests {
+            // Required by Robolectric to load resources.
+            isIncludeAndroidResources = true
+            all {
+                // Robolectric accesses JDK internals that are closed by default on newer JDKs.
+                it.jvmArgs(
+                    "--add-opens=java.base/java.io=ALL-UNNAMED",
+                    "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
+                    "--enable-native-access=ALL-UNNAMED",
+                )
+            }
+        }
+    }
     buildFeatures {
         compose = true
     }
@@ -71,6 +85,10 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
