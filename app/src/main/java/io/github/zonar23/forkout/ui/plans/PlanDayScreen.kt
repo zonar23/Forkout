@@ -94,6 +94,8 @@ fun PlanDayScreen(
                 onAddSet = viewModel::addSet,
                 onRemove = viewModel::startRemove,
                 onAddExercise = { onAddExercise(day.id) },
+                expandedIds = uiState.expandedIds,
+                onToggleExpanded = viewModel::toggleExpanded,
             )
         }
         Button(
@@ -161,6 +163,8 @@ private fun ExerciseList(
     onAddSet: (Long) -> Unit,
     onRemove: (PlanExerciseEntity) -> Unit,
     onAddExercise: () -> Unit,
+    expandedIds: Set<Long>,
+    onToggleExpanded: (Long) -> Unit,
 ) {
     var items by remember(exercises) { mutableStateOf(exercises) }
     val listState = rememberLazyListState()
@@ -210,7 +214,13 @@ private fun ExerciseList(
                                 contentDescription = stringResource(R.string.drag_to_reorder),
                             )
                         }
-                        Column(modifier = Modifier.weight(1f)) {
+                        val expanded = item.planExercise.id in expandedIds
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { onToggleExpanded(item.planExercise.id) }
+                                .padding(vertical = 12.dp),
+                        ) {
                             Text(item.exercise.name, style = MaterialTheme.typography.titleMedium)
                             if (item.exercise.setupNote.isNotBlank()) {
                                 Text(
@@ -219,6 +229,25 @@ private fun ExerciseList(
                                     color = MaterialTheme.colorScheme.primary,
                                 )
                             }
+                            if (!expanded) {
+                                val summary = item.sets.summarize()
+                                Text(
+                                    text = stringResource(
+                                        R.string.day_sets_summary,
+                                        pluralStringResource(R.plurals.day_set_count, summary.count, summary.count),
+                                        summary.reps,
+                                        summary.weightKg,
+                                    ),
+                                    style = NumberTextStyles.small,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                        IconButton(onClick = { onToggleExpanded(item.planExercise.id) }) {
+                            Icon(
+                                painter = painterResource(if (expanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more),
+                                contentDescription = stringResource(if (expanded) R.string.collapse else R.string.expand),
+                            )
                         }
                         OverflowMenu(
                             actions = listOf(
@@ -230,19 +259,21 @@ private fun ExerciseList(
                             ),
                         )
                     }
-                    item.sets.forEachIndexed { index, set ->
-                        SetRow(
-                            number = index + 1,
-                            set = set,
-                            onClick = { onSetClick(set, index + 1, item.sets.size) },
-                        )
-                    }
-                    TextButton(
-                        onClick = { onAddSet(item.planExercise.id) },
-                        modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
-                    ) {
-                        Icon(painterResource(R.drawable.ic_add), contentDescription = null)
-                        Text(stringResource(R.string.day_add_set), modifier = Modifier.padding(start = 8.dp))
+                    if (item.planExercise.id in expandedIds) {
+                        item.sets.forEachIndexed { index, set ->
+                            SetRow(
+                                number = index + 1,
+                                set = set,
+                                onClick = { onSetClick(set, index + 1, item.sets.size) },
+                            )
+                        }
+                        TextButton(
+                            onClick = { onAddSet(item.planExercise.id) },
+                            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+                        ) {
+                            Icon(painterResource(R.drawable.ic_add), contentDescription = null)
+                            Text(stringResource(R.string.day_add_set), modifier = Modifier.padding(start = 8.dp))
+                        }
                     }
                 }
             }

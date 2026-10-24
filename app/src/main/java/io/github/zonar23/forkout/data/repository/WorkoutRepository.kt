@@ -102,6 +102,10 @@ class WorkoutRepository @Inject constructor(
         dao.updateSet(set.copy(actualReps = reps, actualWeightGrams = weightGrams, rir = rir))
     }
 
+    /** Postpones an exercise, e.g. when its machine is taken. The plan stays unchanged. */
+    suspend fun moveExerciseToEnd(sessionId: Long, exercisePosition: Int) =
+        dao.moveExerciseToEnd(sessionId, exercisePosition)
+
     suspend fun setCompleted(setId: Long, completed: Boolean) {
         val set = dao.getSet(setId) ?: return
         dao.updateSet(set.copy(completedAt = if (completed) clock.instant() else null))

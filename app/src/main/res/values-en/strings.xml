@@ -127,6 +127,13 @@
         <item quantity="other">%d reps</item>
     </plurals>
     <string name="day_set_weight">%1$s kg</string>
+    <plurals name="day_set_count">
+        <item quantity="one">%d set</item>
+        <item quantity="other">%d sets</item>
+    </plurals>
+    <string name="day_sets_summary">%1$s · %2$s reps · %3$s kg</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
 
     <!-- Set editor -->
     <string name="set_edit_title">Set %1$d</string>
@@ -145,7 +152,6 @@
     <string name="workout_active_dialog_text">“%1$s” has not been finished yet. Resume or finish it before starting a new one.</string>
     <string name="workout_resume">Resume</string>
     <string name="workout_running_banner">Workout running · %1$s</string>
-    <string name="workout_last_time">Last time: %1$s</string>
     <string name="workout_last_set">%1$d × %2$s kg</string>
     <string name="workout_reps">reps</string>
     <string name="workout_weight">kg</string>
@@ -166,6 +172,15 @@
     <string name="workout_finish_confirm">Finish</string>
     <string name="workout_rest">Rest</string>
     <string name="workout_rest_skip">Skip</string>
+    <string name="workout_now">Now</string>
+    <string name="workout_up_next">Up next</string>
+    <string name="workout_set_of">Set %1$d of %2$d</string>
+    <string name="workout_like_last_time">Like last time: %1$s</string>
+    <string name="workout_all_done">All sets done</string>
+    <string name="workout_all_done_hint">Finish the workout to save it to your history.</string>
+    <string name="workout_overview">Overview</string>
+    <string name="workout_move_to_end">Move to end</string>
+    <string name="number_pad_delete">Delete character</string>
 
     <!-- Workout summary -->
     <string name="summary_title">Well done!</string>

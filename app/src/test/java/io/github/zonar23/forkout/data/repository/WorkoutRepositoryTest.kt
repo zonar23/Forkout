@@ -105,4 +105,20 @@ class WorkoutRepositoryTest : DatabaseTest() {
         assertNull(workouts.observeSession(sessionId).first())
         assertNull(workouts.observeActive().first())
     }
+
+    @Test
+    fun moveExerciseToEnd_reordersWorkoutButNotPlan() = runTest {
+        val dayId = planDay()
+        val sessionId = workouts.start(dayId)
+
+        workouts.moveExerciseToEnd(sessionId, exercisePosition = 0)
+
+        val workout = workouts.observeSession(sessionId).first()!!
+        assertEquals(
+            listOf("Latzug", "Latzug", "Beinpresse", "Beinpresse", "Beinpresse"),
+            workout.sets.map { it.exercise.name },
+        )
+        assertEquals(listOf(0, 0, 1, 1, 1), workout.sets.map { it.set.exercisePosition })
+        assertEquals("Beinpresse", plans.observeDay(dayId).first()!!.exercises.first().exercise.name)
+    }
 }

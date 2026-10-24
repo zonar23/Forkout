@@ -40,6 +40,28 @@ class PlanDayViewModel @Inject constructor(
         local.copy(isLoading = false, day = day?.day, exercises = day?.exercises.orEmpty())
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PlanDayUiState())
 
+    init {
+        // Newly added exercises open automatically so their sets can be adjusted right away.
+        viewModelScope.launch {
+            var knownIds: Set<Long>? = null
+            repository.observeDay(dayId).collect { day ->
+                val ids = day?.exercises.orEmpty().map { it.planExercise.id }.toSet()
+                val added = knownIds?.let { ids - it }.orEmpty()
+                if (added.isNotEmpty()) local.update { it.copy(expandedIds = it.expandedIds + added) }
+                knownIds = ids
+            }
+        }
+    }
+
+    fun toggleExpanded(planExerciseId: Long) = local.update {
+        val expanded = if (planExerciseId in it.expandedIds) {
+            it.expandedIds - planExerciseId
+        } else {
+            it.expandedIds + planExerciseId
+        }
+        it.copy(expandedIds = expanded)
+    }
+
     fun onReorder(planExercises: List<PlanExerciseEntity>) {
         viewModelScope.launch { repository.reorderExercises(planExercises) }
     }

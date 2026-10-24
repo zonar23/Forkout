@@ -40,8 +40,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun stepDefaultRest(deltaSeconds: Int) {
-        val seconds = (uiState.value.defaultRestSeconds + deltaSeconds).coerceIn(0, MAX_REST_SECONDS)
-        viewModelScope.launch { settingsRepository.setDefaultRestSeconds(seconds) }
+        viewModelScope.launch { settingsRepository.adjustDefaultRestSeconds(deltaSeconds, MAX_REST_SECONDS) }
     }
 
     /** Date part of the suggested backup file name, e.g. "2026-10-24". */

@@ -18,7 +18,12 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
+
+/** Actual values entered in this session that may not have reached the database yet. */
+private data class ActualValues(val reps: Int?, val weightGrams: Int?)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -29,67 +34,111 @@ class WorkoutViewModel @Inject constructor(
     private val local = MutableStateFlow(WorkoutUiState(isLoading = false))
     private val active = repository.observeActive()
 
+    /**
+     * Latest values per set id, applied on top of the database. Holding ± steps many times per
+     * second; computing each step from this overlay instead of the database loses none of them.
+     */
+    private val actualOverrides = MutableStateFlow<Map<Long, ActualValues>>(emptyMap())
+
+    /** Keeps database writes in the order the user made them. */
+    private val writeMutex = Mutex()
+
     /** Last finished values per exercise id, loaded once per set of exercises. */
     private val lastSets: Flow<Map<Long, List<WorkoutSetEntity>>> = active
         .map { workout -> workout?.sets.orEmpty().map { it.exercise.id }.distinct() }
         .distinctUntilChanged()
         .mapLatest { ids -> ids.associateWith { repository.lastCompletedSets(it) } }
 
-    val uiState: StateFlow<WorkoutUiState> = combine(active, lastSets, local) { workout, lastSets, local ->
-        val exercises = workout?.sets.orEmpty().groupByExercise().map { exercise ->
-            exercise.copy(lastSets = lastSets[exercise.exercise.id].orEmpty())
-        }
-        val openIds = exercises.flatMap { it.sets }.filter { it.completedAt == null }.map { it.id }
-        local.copy(
-            isLoading = false,
-            session = workout?.session,
-            exercises = exercises,
-            focusedSetId = local.focusedSetId?.takeIf { it in openIds } ?: exercises.firstOpenSet()?.id,
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WorkoutUiState())
+    val uiState: StateFlow<WorkoutUiState> =
+        combine(active, lastSets, actualOverrides, local) { workout, lastSets, overrides, local ->
+            val exercises = workout?.sets.orEmpty().groupByExercise().map { exercise ->
+                exercise.copy(
+                    sets = exercise.sets.map { set ->
+                        overrides[set.id]?.let { set.copy(actualReps = it.reps, actualWeightGrams = it.weightGrams) } ?: set
+                    },
+                    lastSets = lastSets[exercise.exercise.id].orEmpty(),
+                )
+            }
+            val openIds = exercises.flatMap { it.sets }.filter { it.completedAt == null }.map { it.id }
+            local.copy(
+                isLoading = false,
+                session = workout?.session,
+                exercises = exercises,
+                // Auto-advance: once the focused set is done, the next open set takes over.
+                focusedSetId = local.focusedSetId?.takeIf { it in openIds } ?: exercises.firstOpenSet()?.id,
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WorkoutUiState())
 
     fun focus(setId: Long) = local.update { it.copy(focusedSetId = setId) }
 
-    fun stepReps(set: WorkoutSetEntity, delta: Int) {
-        val reps = ((set.actualReps ?: set.targetReps ?: 0) + delta).coerceIn(0, MAX_REPS)
-        viewModelScope.launch { repository.updateActual(set.id, reps, set.actualWeightGrams, set.rir) }
+    fun toggleExpanded(exerciseKey: Long) = local.update {
+        val keys = if (exerciseKey in it.expandedKeys) it.expandedKeys - exerciseKey else it.expandedKeys + exerciseKey
+        it.copy(expandedKeys = keys)
     }
 
-    fun stepWeight(set: WorkoutSetEntity, deltaGrams: Int) {
-        val weight = ((set.actualWeightGrams ?: set.targetWeightGrams ?: 0) + deltaGrams).coerceAtLeast(0)
-        viewModelScope.launch { repository.updateActual(set.id, set.actualReps, weight, set.rir) }
+    fun stepReps(setId: Long, delta: Int) = updateActual(setId) { reps, weight ->
+        ((reps ?: 0) + delta).coerceIn(0, MAX_REPS) to weight
     }
 
-    fun openWeightInput(set: WorkoutSetEntity) = local.update {
-        it.copy(weightInput = WeightInput(set.id, WeightFormat.formatKg(set.actualWeightGrams ?: 0)))
+    fun stepWeight(setId: Long, deltaGrams: Int) = updateActual(setId) { reps, weight ->
+        reps to ((weight ?: 0) + deltaGrams).coerceIn(0, MAX_WEIGHT_GRAMS)
     }
 
-    fun onWeightInputChange(text: String) = local.update { state ->
-        state.copy(weightInput = state.weightInput?.copy(text = text))
+    /** Copies reps and weight of the matching set from the last workout. */
+    fun applyLastTime(setId: Long) {
+        val exercise = uiState.value.exercises.firstOrNull { exercise -> exercise.sets.any { it.id == setId } } ?: return
+        val last = exercise.lastTimeFor(exercise.sets.first { it.id == setId }) ?: return
+        updateActual(setId) { _, _ -> last.actualReps to last.actualWeightGrams }
     }
 
-    fun dismissWeightInput() = local.update { it.copy(weightInput = null) }
-
-    fun confirmWeightInput() {
-        val input = local.value.weightInput ?: return
-        val grams = WeightFormat.parseKg(input.text) ?: return
-        val set = uiState.value.allSets.firstOrNull { it.id == input.setId } ?: return
-        viewModelScope.launch {
-            repository.updateActual(set.id, set.actualReps, grams, set.rir)
-            dismissWeightInput()
+    fun openNumberInput(set: WorkoutSetEntity, field: NumberField) = local.update {
+        val text = when (field) {
+            NumberField.REPS -> (set.actualReps ?: 0).toString()
+            NumberField.WEIGHT -> WeightFormat.formatKg(set.actualWeightGrams ?: 0)
         }
+        it.copy(numberInput = NumberInput(set.id, field, text))
+    }
+
+    fun dismissNumberInput() = local.update { it.copy(numberInput = null) }
+
+    /** @return false if [text] is not a valid value for the open field. */
+    fun isValidNumber(text: String): Boolean = parseNumber(text) != null
+
+    fun confirmNumberInput(text: String) {
+        val input = local.value.numberInput ?: return
+        val value = parseNumber(text) ?: return
+        updateActual(input.setId) { reps, weight ->
+            when (input.field) {
+                NumberField.REPS -> value to weight
+                NumberField.WEIGHT -> reps to value
+            }
+        }
+        dismissNumberInput()
     }
 
     /** Checks or unchecks a set. Checking starts its rest timer, even if an older one was skipped. */
     fun toggleComplete(set: WorkoutSetEntity) {
         val complete = set.completedAt == null
         viewModelScope.launch {
-            repository.setCompleted(set.id, complete)
+            // Pending value changes must be stored before the set is completed.
+            writeMutex.withLock { repository.setCompleted(set.id, complete) }
             if (complete) local.update { it.copy(focusedSetId = null, skippedRestSetId = null) }
         }
     }
 
     fun skipRest(afterSetId: Long) = local.update { it.copy(skippedRestSetId = afterSetId) }
+
+    /** Postpones an exercise, e.g. because its machine is taken. */
+    fun moveToEnd(exercise: WorkoutExercise) {
+        val session = uiState.value.session ?: return
+        viewModelScope.launch {
+            writeMutex.withLock { repository.moveExerciseToEnd(session.id, exercise.position) }
+            // Focus the next open set in the new order, unless the user picked one elsewhere.
+            local.update { state ->
+                if (exercise.sets.any { it.id == state.focusedSetId }) state.copy(focusedSetId = null) else state
+            }
+        }
+    }
 
     /** Finishes directly when all sets are done, otherwise asks first. */
     fun requestFinish() {
@@ -102,7 +151,7 @@ class WorkoutViewModel @Inject constructor(
         val session = uiState.value.session ?: return
         local.update { it.copy(showFinishDialog = false, isClosing = true) }
         viewModelScope.launch {
-            repository.finish(session.id)
+            writeMutex.withLock { repository.finish(session.id) }
             local.update { it.copy(finishedSessionId = session.id) }
         }
     }
@@ -115,13 +164,35 @@ class WorkoutViewModel @Inject constructor(
         val session = uiState.value.session ?: return
         local.update { it.copy(showDiscardDialog = false, isClosing = true) }
         viewModelScope.launch {
-            repository.discard(session.id)
+            writeMutex.withLock { repository.discard(session.id) }
             local.update { it.copy(isClosing = false) }
+        }
+    }
+
+    private fun parseNumber(text: String): Int? = when (local.value.numberInput?.field) {
+        NumberField.REPS -> text.toIntOrNull()?.takeIf { it in 0..MAX_REPS }
+        NumberField.WEIGHT -> WeightFormat.parseKg(text)
+        null -> null
+    }
+
+    /** Applies [change] to the newest values of [setId] immediately and stores them in order. */
+    private fun updateActual(setId: Long, change: (reps: Int?, weightGrams: Int?) -> Pair<Int?, Int?>) {
+        val set = uiState.value.allSets.firstOrNull { it.id == setId } ?: return
+        var stored: ActualValues? = null
+        actualOverrides.update { overrides ->
+            val current = overrides[setId] ?: ActualValues(set.actualReps, set.actualWeightGrams)
+            val (reps, weight) = change(current.reps, current.weightGrams)
+            ActualValues(reps, weight).also { stored = it }.let { overrides + (setId to it) }
+        }
+        val values = stored ?: return
+        viewModelScope.launch {
+            writeMutex.withLock { repository.updateActual(setId, values.reps, values.weightGrams, set.rir) }
         }
     }
 
     companion object {
         const val MAX_REPS = 999
+        const val MAX_WEIGHT_GRAMS = 1_000_000
         const val REPS_STEP = 1
         const val WEIGHT_STEP_GRAMS = 2_500
     }

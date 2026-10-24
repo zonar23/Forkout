@@ -7,12 +7,14 @@ data class WorkoutUiState(
     val isLoading: Boolean = true,
     val session: WorkoutSessionEntity? = null,
     val exercises: List<WorkoutExercise> = emptyList(),
-    /** Set whose steppers are expanded: the user's choice, otherwise the first open set. */
+    /** Set shown in the focus area: the user's choice, otherwise the first open set. */
     val focusedSetId: Long? = null,
     /** Rest after this set was skipped and stays hidden. */
     val skippedRestSetId: Long? = null,
-    /** Set whose weight is being typed in a dialog, with the current text. */
-    val weightInput: WeightInput? = null,
+    /** Overview cards the user expanded, by [WorkoutExercise.key]. */
+    val expandedKeys: Set<Long> = emptySet(),
+    /** Value being typed on the number pad. */
+    val numberInput: NumberInput? = null,
     val showFinishDialog: Boolean = false,
     val showDiscardDialog: Boolean = false,
     /** Set after finishing; the screen then opens the summary for this session. */
@@ -23,12 +25,17 @@ data class WorkoutUiState(
     val allSets: List<WorkoutSetEntity> get() = exercises.flatMap { it.sets }
     val completedSets: Int get() = allSets.count { it.completedAt != null }
     val openSets: Int get() = allSets.size - completedSets
+    val focus: Focus? get() = exercises.focus(focusedSetId)
 
     /** No workout is running (anymore), e.g. it was discarded elsewhere. */
     val isGone: Boolean get() = !isLoading && session == null && !isClosing && finishedSessionId == null
 }
 
-data class WeightInput(
+enum class NumberField { REPS, WEIGHT }
+
+data class NumberInput(
     val setId: Long,
-    val text: String,
+    val field: NumberField,
+    /** Current value as text, e.g. "82,5". */
+    val initialText: String,
 )

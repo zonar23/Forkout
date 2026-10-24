@@ -41,6 +41,20 @@ interface WorkoutDao {
     @Query("SELECT EXISTS(SELECT 1 FROM workout_sessions WHERE finished_at IS NULL)")
     suspend fun hasActiveSession(): Boolean
 
+    /** Moves the exercise at [position] behind all others; later exercises move up by one. */
+    @Query(
+        """
+        UPDATE workout_sets SET exercise_position = CASE
+            WHEN exercise_position = :position
+                THEN (SELECT MAX(exercise_position) FROM workout_sets WHERE session_id = :sessionId)
+            WHEN exercise_position > :position THEN exercise_position - 1
+            ELSE exercise_position
+        END
+        WHERE session_id = :sessionId
+        """
+    )
+    suspend fun moveExerciseToEnd(sessionId: Long, position: Int)
+
     /** The workout currently in progress, if any. */
     @Transaction
     @Query("SELECT * FROM workout_sessions WHERE finished_at IS NULL ORDER BY started_at DESC LIMIT 1")

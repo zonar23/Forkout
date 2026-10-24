@@ -66,26 +66,83 @@ class WorkoutViewModelTest : DatabaseTest() {
         val vm = runningWorkout()
         val set = vm.uiState.value.exercises[0].sets[0]
 
-        vm.stepWeight(set, WorkoutViewModel.WEIGHT_STEP_GRAMS)
-        val updated = vm.uiState.first { it.allSets.first().actualWeightGrams == 82_500 }.allSets.first()
-        vm.stepReps(updated, -2)
+        vm.stepWeight(set.id, WorkoutViewModel.WEIGHT_STEP_GRAMS)
+        vm.stepReps(set.id, -2)
         val final = vm.uiState.first { it.allSets.first().actualReps == 8 }.allSets.first()
 
+        assertEquals(82_500, final.actualWeightGrams)
         assertEquals(80_000, final.targetWeightGrams)
         assertEquals(10, final.targetReps)
     }
 
     @Test
-    fun weightInput_acceptsTypedValue() = runTest {
+    fun fastRepeatedSteps_areAllCountedAndStored() = runTest {
+        val vm = runningWorkout()
+        val set = vm.uiState.value.exercises[0].sets[0]
+
+        // Holding + fires steps faster than the database answers.
+        repeat(8) { vm.stepWeight(set.id, WorkoutViewModel.WEIGHT_STEP_GRAMS) }
+
+        assertEquals(100_000, vm.uiState.value.allSets.first().actualWeightGrams)
+        val stored = workouts.observeActive().first { workout ->
+            workout?.sets?.first { it.set.id == set.id }?.set?.actualWeightGrams == 100_000
+        }
+        assertNotNull(stored)
+    }
+
+    @Test
+    fun numberInput_acceptsTypedWeightAndReps() = runTest {
         val vm = runningWorkout()
         val set = vm.uiState.value.exercises[1].sets[0]
 
-        vm.openWeightInput(set)
-        assertEquals("40", vm.uiState.value.weightInput?.text)
-        vm.onWeightInputChange("42,5")
-        vm.confirmWeightInput()
+        vm.openNumberInput(set, NumberField.WEIGHT)
+        assertEquals("40", vm.uiState.value.numberInput?.initialText)
+        assertFalse(vm.isValidNumber("abc"))
+        vm.confirmNumberInput("42,5")
+        vm.openNumberInput(vm.uiState.value.exercises[1].sets[0], NumberField.REPS)
+        assertFalse(vm.isValidNumber("1000"))
+        vm.confirmNumberInput("8")
 
-        vm.uiState.first { state -> state.weightInput == null && state.allSets.any { it.actualWeightGrams == 42_500 } }
+        val updated = vm.uiState.first { it.numberInput == null }.exercises[1].sets[0]
+        assertEquals(42_500, updated.actualWeightGrams)
+        assertEquals(8, updated.actualReps)
+    }
+
+    @Test
+    fun moveToEnd_postponesExerciseAndMovesFocus() = runTest {
+        val vm = runningWorkout()
+        val legPress = vm.uiState.value.exercises[0]
+
+        vm.moveToEnd(legPress)
+        val state = vm.uiState.first { it.exercises.first().exercise.id == latPullId }
+
+        assertEquals(listOf("Latzug", "Beinpresse"), state.exercises.map { it.exercise.name })
+        assertEquals(state.exercises[0].sets[0].id, state.focusedSetId)
+        // The card keeps its identity, so expanded state survives the move.
+        assertEquals(legPress.key, state.exercises[1].key)
+    }
+
+    @Test
+    fun likeLastTime_copiesPreviousValues() = runTest {
+        val dayId = planDay()
+        val firstId = workouts.start(dayId)
+        val latPullSet = workouts.observeSession(firstId).first()!!.sets.first { it.exercise.id == latPullId }.set
+        workouts.updateActual(latPullSet.id, reps = 11, weightGrams = 42_500)
+        workouts.setCompleted(latPullSet.id, completed = true)
+        workouts.finish(firstId)
+        workouts.start(dayId)
+        val vm = WorkoutViewModel(workouts)
+        val state = vm.uiState.first { state -> state.exercises.any { it.lastSets.isNotEmpty() } }
+        val set = state.exercises.first { it.exercise.id == latPullId }.sets[0]
+
+        vm.focus(set.id)
+        assertEquals(42_500, vm.uiState.value.focus?.lastTime?.actualWeightGrams)
+        vm.applyLastTime(set.id)
+
+        val focus = vm.uiState.first { it.focus?.set?.actualWeightGrams == 42_500 }.focus!!
+        assertEquals(11, focus.set.actualReps)
+        // Once the values match, the chip has nothing left to offer.
+        assertNull(focus.lastTime)
     }
 
     @Test

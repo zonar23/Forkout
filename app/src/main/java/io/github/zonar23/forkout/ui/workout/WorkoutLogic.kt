@@ -13,7 +13,37 @@ data class WorkoutExercise(
     val sets: List<WorkoutSetEntity>,
     /** Completed sets of the last finished workout with this exercise, for orientation. */
     val lastSets: List<WorkoutSetEntity> = emptyList(),
+) {
+    /** Stable identity, also when the exercise is moved: its first set never changes. */
+    val key: Long get() = sets.firstOrNull()?.id ?: -position.toLong()
+
+    val completedCount: Int get() = sets.count { it.completedAt != null }
+
+    val isDone: Boolean get() = sets.isNotEmpty() && completedCount == sets.size
+
+    /** Last time's values for [set]: the set with the same number, else the last one done. */
+    fun lastTimeFor(set: WorkoutSetEntity): WorkoutSetEntity? =
+        lastSets.firstOrNull { it.setIndex == set.setIndex } ?: lastSets.lastOrNull()
+}
+
+/** The set shown large in the focus area, with its context. */
+data class Focus(
+    val exercise: WorkoutExercise,
+    val set: WorkoutSetEntity,
+    /** 1-based. */
+    val setNumber: Int,
+    /** Last time's values, only if they differ from the current ones. */
+    val lastTime: WorkoutSetEntity?,
 )
+
+fun List<WorkoutExercise>.focus(focusedSetId: Long?): Focus? {
+    val exercise = firstOrNull { exercise -> exercise.sets.any { it.id == focusedSetId } } ?: return null
+    val set = exercise.sets.first { it.id == focusedSetId }
+    val lastTime = exercise.lastTimeFor(set)?.takeIf {
+        it.actualReps != set.actualReps || it.actualWeightGrams != set.actualWeightGrams
+    }
+    return Focus(exercise, set, exercise.sets.indexOf(set) + 1, lastTime)
+}
 
 /**
  * Rest after the most recently completed set. Based on the set's completion time, so it

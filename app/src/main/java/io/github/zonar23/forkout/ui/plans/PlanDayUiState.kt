@@ -17,8 +17,30 @@ data class PlanDayUiState(
     val blockingWorkoutName: String? = null,
     /** Set once the workout screen should open (started or resumed). */
     val openWorkout: Boolean = false,
+    /** Plan exercises shown with their sets; the others show a one-line summary. */
+    val expandedIds: Set<Long> = emptySet(),
 ) {
     val isGone: Boolean get() = !isLoading && day == null
+}
+
+/** Compact values of a collapsed exercise, e.g. reps "10–12" and weight "75–80". */
+data class SetsSummary(
+    val count: Int,
+    val reps: String,
+    val weightKg: String,
+)
+
+fun List<PlanSetEntity>.summarize(): SetsSummary {
+    fun range(values: List<Int>, format: (Int) -> String): String {
+        val min = values.minOrNull() ?: return format(0)
+        val max = values.max()
+        return if (min == max) format(min) else "${format(min)}–${format(max)}"
+    }
+    return SetsSummary(
+        count = size,
+        reps = range(map { it.targetReps }) { it.toString() },
+        weightKg = range(map { it.targetWeightGrams }) { WeightFormat.formatKg(it) },
+    )
 }
 
 /** Text-based state of the set dialog so that partial input like "82," can be typed. */

@@ -130,6 +130,13 @@
         <item quantity="other">%d Wdh.</item>
     </plurals>
     <string name="day_set_weight">%1$s kg</string>
+    <plurals name="day_set_count">
+        <item quantity="one">%d Satz</item>
+        <item quantity="other">%d Sätze</item>
+    </plurals>
+    <string name="day_sets_summary">%1$s · %2$s Wdh. · %3$s kg</string>
+    <string name="expand">Ausklappen</string>
+    <string name="collapse">Einklappen</string>
 
     <!-- Set editor -->
     <string name="set_edit_title">Satz %1$d</string>
@@ -148,7 +155,6 @@
     <string name="workout_active_dialog_text">„%1$s“ ist noch nicht beendet. Setze es fort oder beende es, bevor du ein neues startest.</string>
     <string name="workout_resume">Fortsetzen</string>
     <string name="workout_running_banner">Training läuft · %1$s</string>
-    <string name="workout_last_time">Letztes Mal: %1$s</string>
     <string name="workout_last_set">%1$d × %2$s kg</string>
     <string name="workout_reps">Wdh.</string>
     <string name="workout_weight">kg</string>
@@ -169,6 +175,15 @@
     <string name="workout_finish_confirm">Beenden</string>
     <string name="workout_rest">Pause</string>
     <string name="workout_rest_skip">Überspringen</string>
+    <string name="workout_now">Jetzt dran</string>
+    <string name="workout_up_next">Als Nächstes</string>
+    <string name="workout_set_of">Satz %1$d von %2$d</string>
+    <string name="workout_like_last_time">Wie letztes Mal: %1$s</string>
+    <string name="workout_all_done">Alle Sätze erledigt</string>
+    <string name="workout_all_done_hint">Beende das Training, damit es im Verlauf gespeichert wird.</string>
+    <string name="workout_overview">Übersicht</string>
+    <string name="workout_move_to_end">Ans Ende schieben</string>
+    <string name="number_pad_delete">Zeichen löschen</string>
 
     <!-- Workout summary -->
     <string name="summary_title">Geschafft!</string>

@@ -66,7 +66,7 @@ Paketname: `io.github.zonar23.forkout`.
 - In kleinen, überprüfbaren Schritten arbeiten. Jeder Schritt muss bauen (`./gradlew assembleDebug`).
 - Nach Änderungen an der Datenschicht: Unit-/Room-Tests ergänzen und ausführen (`./gradlew test`).
 - Bei Unklarheiten zu Funktionen zuerst `docs/KONZEPT.md` lesen, dann nachfragen statt raten.
-- Meilensteine siehe `docs/KONZEPT.md`, Abschnitt 10. Aktuellen Stand unten pflegen.
+- Meilensteine siehe `docs/KONZEPT.md`, Abschnitt 10 (bis 0.1) und 11 (bis 0.3). Aktuellen Stand unten pflegen.
 
 ## Aktueller Stand
 - [x] M0 Projekt-Setup (Theme, Navigation mit Platzhaltern, Abhängigkeiten, CI mit Build, Tests und Lint)
@@ -77,3 +77,9 @@ Paketname: `io.github.zonar23.forkout`.
 - [x] M5 Verlauf & Heute (Heute mit nächster Einheit, Wochenfortschritt und letztem Training; Verlauf mit Detail und Löschen; Verlauf pro Übung)
 - [x] M6 Export / Import (JSON-Sicherung über den Dateidialog, Import ersetzt alles in einer Transaktion, Format in `docs/BACKUP_FORMAT.md`; Standard-Pause in den Einstellungen)
 - [ ] M7 Release 0.1 – vorbereitet: README, CHANGELOG, CONTRIBUTING, Screenshots (`docs/screenshots`, Demo-Daten in `docs/demo`), Release-Signierung über lokale `keystore.properties` (`docs/RELEASE.md`), R8-Release-Build auf dem Emulator geprüft. Offen: Signierschlüssel anlegen, signiertes APK bauen, Tag `v0.1.0` und GitHub-Release
+- [x] M8 Trainingsmodus 2.0 (Fokus-Ansicht mit Pausenring und Auto-Weiter, Übungen ein-/ausklappbar in Training und Plan, Ziffernblock, schnelles Zählen bei gedrücktem ±, „wie letztes Mal“, Haptik mit Vorwarnung, Übung ans Ende schieben)
+- [ ] M9 Sperrbildschirm & Mini-Player
+- [ ] M10 Leichter Einstieg → Release 0.2
+- [ ] M11 Smarte Progression
+- [ ] M12 Fortschritt
+- [ ] M13 Teilen → Release 0.3

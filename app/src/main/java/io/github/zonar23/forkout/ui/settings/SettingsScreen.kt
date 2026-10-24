@@ -2,24 +2,20 @@ package io.github.zonar23.forkout.ui.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.zonar23.forkout.R
+import io.github.zonar23.forkout.ui.components.RepeatingStepButton
 import io.github.zonar23.forkout.ui.components.TimeFormat
 import io.github.zonar23.forkout.ui.settings.SettingsViewModel.Companion.REST_STEP_SECONDS
 import io.github.zonar23.forkout.ui.theme.ForkoutTheme
@@ -155,17 +151,17 @@ private fun SettingsContent(
             supportingContent = { Text(stringResource(R.string.settings_default_rest_summary)) },
             trailingContent = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    StepButton(R.drawable.ic_remove, stringResource(R.string.stepper_decrease)) {
+                    RepeatingStepButton(R.drawable.ic_remove, stringResource(R.string.stepper_decrease), size = 48.dp, onStep = {
                         onStepRest(-REST_STEP_SECONDS)
-                    }
+                    })
                     Text(
                         text = TimeFormat.formatMinutesSeconds(uiState.defaultRestSeconds),
                         style = NumberTextStyles.small,
                         modifier = Modifier.padding(horizontal = 12.dp),
                     )
-                    StepButton(R.drawable.ic_add, stringResource(R.string.stepper_increase)) {
+                    RepeatingStepButton(R.drawable.ic_add, stringResource(R.string.stepper_increase), size = 48.dp, onStep = {
                         onStepRest(REST_STEP_SECONDS)
-                    }
+                    })
                 }
             },
             colors = itemColors,
@@ -197,16 +193,6 @@ private fun SectionTitle(text: String) {
     )
 }
 
-@Composable
-private fun StepButton(iconRes: Int, description: String, onClick: () -> Unit) {
-    OutlinedIconButton(
-        onClick = onClick,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        modifier = Modifier.size(48.dp),
-    ) {
-        Icon(painterResource(iconRes), contentDescription = description)
-    }
-}
 
 @Preview(showBackground = true, backgroundColor = 0xFF0E0F12)
 @Composable

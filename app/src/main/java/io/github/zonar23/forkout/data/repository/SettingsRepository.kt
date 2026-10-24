@@ -46,6 +46,14 @@ class SettingsRepository @Inject constructor(
         dataStore.edit { it[Keys.DEFAULT_REST_SECONDS] = seconds }
     }
 
+    /** Changes the default rest relative to the stored value, so fast repeated steps add up. */
+    suspend fun adjustDefaultRestSeconds(deltaSeconds: Int, maxSeconds: Int) {
+        dataStore.edit { prefs ->
+            val current = prefs[Keys.DEFAULT_REST_SECONDS] ?: UserSettings.DEFAULT_REST_SECONDS
+            prefs[Keys.DEFAULT_REST_SECONDS] = (current + deltaSeconds).coerceIn(0, maxSeconds)
+        }
+    }
+
     suspend fun setWeightUnit(unit: WeightUnit) {
         dataStore.edit { it[Keys.WEIGHT_UNIT] = unit.name }
     }

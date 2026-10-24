@@ -78,19 +78,39 @@ Forkout ist ein schlanker, moderner Trainingsbegleiter für Kraftsport im Studio
 
 ## 3. Roadmap (nach V1)
 
+Leitlinie für 0.2: **Die App muss im Gym intuitiv sein.** Der Trainingsmodus wird mit einer Hand, außer Atem und zwischen zwei Sätzen bedient. Neue Funktionen müssen das erleichtern, nicht erschweren. Die Meilensteine dazu stehen in Abschnitt 11.
+
 | Version | Funktion |
 |---|---|
-| 0.2 | **Bedienung vereinfachen:** Abläufe mit echten Nutzer:innen prüfen und intuitiver machen (z. B. kürzerer Weg vom Start zum Training, Einführung beim ersten Start, klarere Beschriftungen) |
+| 0.2 | **Trainingsmodus 2.0:** Fokus-Ansicht für den aktuellen Satz mit großem Pausenring und automatischem Weiter zum nächsten Satz; Übungen im Training und im Plan ein- und ausklappbar |
+| 0.2 | **Schnelle Eingabe:** Ziffernblock beim Tippen auf eine Zahl, schnelles Zählen bei gedrücktem ±, Chip „wie letztes Mal“ |
+| 0.2 | **Haptik:** kurzes Vibrieren beim Abhaken, Vorwarnung 10 s vor Pausenende, deutliches Muster am Ende |
+| 0.2 | **Gerät besetzt:** Übung im laufenden Training ans Ende schieben, ohne den Plan zu ändern |
+| 0.2 | **Pausentimer auf dem Sperrbildschirm** als Benachrichtigung mit Restzeit und „Überspringen“ |
+| 0.2 | **Mini-Player:** Leiste für das laufende Training mit Fortschritt („4/7“) und Restpause |
+| 0.2 | **Leichter Einstieg:** Vorlagen-Pläne (z. B. Ganzkörper 3×/Woche, Push/Pull/Beine), Heute-Seite mit eigenen Zuständen (Ruhetag, Training läuft, Woche geschafft, noch kein Plan), „letztes Training vor 2 Tagen“, Erfolgshinweis |
+| 0.2 | **Zurück-Geste mit Vorschau** (Predictive Back) |
 | 0.2 | Trainingsuhr pausieren (Pausenzeiten speichern) |
-| 0.2 | Diagramme pro Übung (Gewicht, Volumen, geschätztes 1RM) |
-| 0.2 | **Progressionshinweis** (doppelte Progression: alle Sätze mit Ziel-Wdh. geschafft → „Gewicht erhöhen?“) |
-| 0.2 | Optionales **RIR-Feld** (Wiederholungen in Reserve) pro Satz |
-| 0.3 | Pausentimer als Benachrichtigung bei gesperrtem Bildschirm (Foreground Service) |
+| 0.3 | **Gewichtsschritte pro Übung:** Maschine 2,5 kg, Kabelzug 1,25 kg, freie Gewichte 2,5 kg, e-Gerät frei einstellbar |
+| 0.3 | **Progressionsvorschlag** (doppelte Progression: alle Sätze mit Ziel-Wdh. geschafft → „Gewicht erhöhen auf 37,5 kg?“, mit einem Tipp übernehmen) |
+| 0.3 | Aufwärmsätze (z. B. 50 % und 75 %) und Scheibenrechner für freie Gewichte |
+| 0.3 | Optionales **RIR-Feld** (Wiederholungen in Reserve) pro Satz, als Zahl |
+| 0.3 | **Fortschritt sichtbar machen:** Diagramme pro Übung (Gewicht, Volumen, geschätztes 1RM), persönliche Rekorde mit dezenter Feier im Training, Kalender-Heatmap, Muskel-Karte mit selbst gezeichneter Silhouette |
+| 0.3 | **Plan teilen** als Datei über das Android-Teilen-Menü und als Plan importieren, ohne andere Daten zu ersetzen |
 | 0.3 | Supersätze / Zirkel |
-| 0.3 | Pläne teilen per Datei oder QR-Code |
-| 0.4 | Mehrsprachigkeit (DE/EN, Community-Übersetzungen) |
+| 0.4 | Mehrsprachigkeit (DE/EN, Community-Übersetzungen) mit Sprachwahl in den Einstellungen |
 | 0.4 | Körpergewicht & Maße |
-| später | Health Connect, Wear OS, Home-Screen-Widget, Plan-Import per Foto (OCR) |
+| 0.4 | Plan teilen per QR-Code (Kamera-Berechtigung und freie Scanner-Bibliothek nötig, nur für kleine Pläne) |
+| später | Übung gegen eine Alternative tauschen, Shared-Element-Übergänge, Home-Screen-Widget, Kacheln für die Schnelleinstellungen, Health Connect, Wear OS |
+
+### Bewusst nicht geplant
+
+| Idee | Grund |
+|---|---|
+| Wischgesten zum Abhaken oder Überspringen | Mit verschwitzten Händen zu fehleranfällig, schlecht auffindbar |
+| Drei statt vier Tabs | Die Übungsbibliothek braucht einen festen Ort; erst nach Tests mit Nutzer:innen neu bewerten |
+| Anstrengung per Smiley-Skala | Kostet bei jedem Satz einen zusätzlichen Tipp; RIR bleibt optional als Zahl |
+| Plan-Import per Foto (OCR) | Freie Texterkennung liefert bei Tabellen und Handschrift schwache Ergebnisse, proprietäre Lösungen passen nicht zu F-Droid |
 
 ---
 
@@ -229,3 +249,16 @@ Keine Internet-Berechtigung in V1. Das ist ein klares Datenschutz-Signal.
 | M5 | Verlauf & Heute | Trainingsliste, Details, Wochenfortschritt |
 | M6 | Export / Import | JSON-Backup und -Wiederherstellung |
 | M7 | Release 0.1 | README, Screenshots, signiertes APK |
+
+---
+
+## 11. Meilensteine bis Version 0.3
+
+| # | Meilenstein | Ergebnis |
+|---|---|---|
+| M8 | Trainingsmodus 2.0 | Fokus-Ansicht mit Pausenring und Auto-Weiter, Übungen ein-/ausklappbar (Training und Plan), Ziffernblock, schnelles Zählen, „wie letztes Mal“, Haptik, Übung ans Ende schieben |
+| M9 | Sperrbildschirm & Mini-Player | Pausentimer als Benachrichtigung mit Countdown und „Überspringen“, Vibration auch bei gesperrtem Bildschirm, Mini-Player mit Fortschritt und Restpause |
+| M10 | Leichter Einstieg | Vorlagen-Pläne, Heute-Zustände, relative Zeitangaben, Erfolgshinweis, Predictive Back, Trainingsuhr pausieren → Release 0.2 |
+| M11 | Smarte Progression | Gewichtsschritte pro Übung (Migration), Progressionsvorschlag, Aufwärmsätze, Scheibenrechner, optionales RIR |
+| M12 | Fortschritt | Diagramme, persönliche Rekorde, Kalender-Heatmap, Muskel-Karte |
+| M13 | Teilen | Plan als Datei teilen und einzeln importieren → Release 0.3 |
