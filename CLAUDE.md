@@ -76,7 +76,7 @@ Paketname: `io.github.zonar23.forkout`.
 - [x] M4 Trainingsmodus (Checkliste mit Ist-Werten per Stepper, letzte Werte, Pausentimer über Endzeitpunkt mit Vibration, Bildschirm bleibt an, Fortsetzen-Banner, Abbrechen, Zusammenfassung). Trainingsuhr pausieren steht auf der Roadmap (0.2)
 - [x] M5 Verlauf & Heute (Heute mit nächster Einheit, Wochenfortschritt und letztem Training; Verlauf mit Detail und Löschen; Verlauf pro Übung)
 - [x] M6 Export / Import (JSON-Sicherung über den Dateidialog, Import ersetzt alles in einer Transaktion, Format in `docs/BACKUP_FORMAT.md`; Standard-Pause in den Einstellungen)
-- [ ] M7 Release 0.1 – vorbereitet: README, CHANGELOG, CONTRIBUTING, Screenshots (`docs/screenshots`, Demo-Daten in `docs/demo`), Release-Signierung über lokale `keystore.properties` (`docs/RELEASE.md`), R8-Release-Build auf dem Emulator geprüft. Offen: Signierschlüssel anlegen, signiertes APK bauen, Tag `v0.1.0` und GitHub-Release
+- [x] M7 Release 0.1 (Tag `v0.1.0`): README, CHANGELOG, CONTRIBUTING, Screenshots (`docs/screenshots`, Demo-Daten in `docs/demo`), Release-Signierung über lokale `keystore.properties` (`docs/RELEASE.md`), R8-Release-Build auf dem Emulator geprüft. APK auf einem Pixel 8 Pro getestet
 - [x] M8 Trainingsmodus 2.0 (Fokus-Ansicht mit Pausenring und Auto-Weiter, Übungen ein-/ausklappbar in Training und Plan, Ziffernblock, schnelles Zählen bei gedrücktem ±, „wie letztes Mal“, Haptik mit Vorwarnung, Übung ans Ende schieben)
 - [ ] M9 Sperrbildschirm & Mini-Player
 - [ ] M10 Leichter Einstieg → Release 0.2
