@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Single-colour icon for themed icons (Android 13+); the system tints it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- North star -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M54,21.5 L55.5,25.5 L59.5,27 L55.5,28.5 L54,32.5 L52.5,28.5 L48.5,27 L52.5,25.5 Z" />
+    <!-- Summit as git graph -->
+    <path
+        android:pathData="M39,63.5 L54,39.5 L69,63.5"
+        android:strokeWidth="4.5"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M60.8,50.4 L66.6,45.4"
+        android:strokeWidth="3.2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M50,39.5 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M64.4,44.8 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <!-- Barbell -->
+    <path
+        android:pathData="M35,66.5 L73,66.5"
+        android:strokeWidth="3.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M32,57.5 h2 a1.5,1.5 0 0,1 1.5,1.5 v15 a1.5,1.5 0 0,1 -1.5,1.5 h-2 a1.5,1.5 0 0,1 -1.5,-1.5 v-15 a1.5,1.5 0 0,1 1.5,-1.5 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M74,57.5 h2 a1.5,1.5 0 0,1 1.5,1.5 v15 a1.5,1.5 0 0,1 -1.5,1.5 h-2 a1.5,1.5 0 0,1 -1.5,-1.5 v-15 a1.5,1.5 0 0,1 1.5,-1.5 Z" />
+</vector>

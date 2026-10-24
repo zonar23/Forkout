@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512" role="img" aria-label="Forkout">
+  <!--
+    Forkout app icon, "Gipfel-Hantel": a summit drawn as a git graph (open source) standing on a
+    barbell (fitness), with the north star above it (north). Drawn on the 108 × 108 grid of
+    Android adaptive icons; all artwork stays inside the 66 dp safe zone around the centre.
+    The Android vector drawables in app/src/main/res/drawable are derived from this file.
+    License: MIT, like the rest of the project.
+  -->
+  <rect width="108" height="108" rx="24" fill="#0E0F12"/>
+  <!-- North star -->
+  <path d="M54 21.5 L55.5 25.5 L59.5 27 L55.5 28.5 L54 32.5 L52.5 28.5 L48.5 27 L52.5 25.5 Z" fill="#F2F3F5"/>
+  <!-- Summit as git graph: main line, branch and commit dots -->
+  <path d="M39 63.5 L54 39.5 L69 63.5" fill="none" stroke="#C6F432" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60.8 50.4 L66.6 45.4" fill="none" stroke="#C6F432" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="54" cy="39.5" r="4" fill="#C6F432"/>
+  <circle cx="67.4" cy="44.8" r="3" fill="#C6F432"/>
+  <!-- Barbell -->
+  <path d="M35 66.5 L73 66.5" fill="none" stroke="#F2F3F5" stroke-width="3.6" stroke-linecap="round"/>
+  <rect x="30.5" y="57.5" width="5" height="18" rx="1.5" fill="#F2F3F5"/>
+  <rect x="72.5" y="57.5" width="5" height="18" rx="1.5" fill="#F2F3F5"/>
+</svg>

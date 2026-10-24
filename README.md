@@ -1,3 +1,5 @@
+<img src="docs/logo/forkout-icon.svg" width="96" alt="Forkout-Logo: Gipfel aus Git-Linien auf einer Langhantel, darüber ein Nordstern">
+
 # Forkout
 
 > **Fork it. Lift it.**
@@ -57,4 +59,4 @@ Beiträge sind willkommen, siehe [CONTRIBUTING.md](CONTRIBUTING.md). Ideen und F
 
 ## Lizenz
 
-[MIT](LICENSE). Icons: [Material Symbols](https://fonts.google.com/icons) (Apache 2.0).
+[MIT](LICENSE). Das App-Icon („Gipfel-Hantel“: Gipfel als Git-Graph auf einer Langhantel, darüber der Nordstern) ist selbst gezeichnet und steht ebenfalls unter MIT. Icons in der App: [Material Symbols](https://fonts.google.com/icons) (Apache 2.0).
