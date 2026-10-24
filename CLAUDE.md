@@ -75,5 +75,5 @@ Paketname: `io.github.zonar23.forkout`.
 - [x] M3 Plan-Editor (Pläne anlegen, bearbeiten, kopieren, löschen; Einheiten und Übungen per Drag & Drop sortieren; Sätze mit Wdh., Gewicht, Pause; Satz duplizieren, Werte auf alle Sätze übernehmen)
 - [x] M4 Trainingsmodus (Checkliste mit Ist-Werten per Stepper, letzte Werte, Pausentimer über Endzeitpunkt mit Vibration, Bildschirm bleibt an, Fortsetzen-Banner, Abbrechen, Zusammenfassung). Trainingsuhr pausieren steht auf der Roadmap (0.2)
 - [x] M5 Verlauf & Heute (Heute mit nächster Einheit, Wochenfortschritt und letztem Training; Verlauf mit Detail und Löschen; Verlauf pro Übung)
-- [ ] M6 Export / Import
+- [x] M6 Export / Import (JSON-Sicherung über den Dateidialog, Import ersetzt alles in einer Transaktion, Format in `docs/BACKUP_FORMAT.md`; Standard-Pause in den Einstellungen)
 - [ ] M7 Release 0.1

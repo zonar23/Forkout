@@ -69,7 +69,7 @@ Forkout ist ein schlanker, moderner Trainingsbegleiter für Kraftsport im Studio
 - Letztes Training auf einen Blick
 
 ### 2.6 Einstellungen & Daten
-- **Export / Import** aller Daten als JSON (über den Android-Dateidialog, keine Speicherberechtigung nötig)
+- **Export / Import** aller Daten als JSON (über den Android-Dateidialog, keine Speicherberechtigung nötig). Format: `docs/BACKUP_FORMAT.md`
 - Gewichtseinheit kg (lb später)
 - AMOLED-Schwarz an/aus
 - Standard-Pausendauer

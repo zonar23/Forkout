@@ -13,6 +13,25 @@
     <!-- Settings -->
     <string name="settings_amoled_title">AMOLED-Schwarz</string>
     <string name="settings_amoled_summary">Echtes Schwarz als Hintergrund, spart Akku auf OLED-Displays</string>
+    <string name="settings_section_display">Darstellung</string>
+    <string name="settings_section_training">Training</string>
+    <string name="settings_section_data">Daten</string>
+    <string name="settings_default_rest_title">Standard-Pause</string>
+    <string name="settings_default_rest_summary">Gilt für neu hinzugefügte Übungen</string>
+    <string name="settings_export_title">Daten exportieren</string>
+    <string name="settings_export_summary">Pläne, Übungen, Trainings und Einstellungen als JSON-Datei sichern</string>
+    <string name="settings_import_title">Daten importieren</string>
+    <string name="settings_import_summary">Aus einer Forkout-Sicherung wiederherstellen</string>
+    <string name="backup_file_name" translatable="false">forkout-backup-%1$s.json</string>
+    <string name="import_confirm_title">Alle Daten ersetzen?</string>
+    <string name="import_confirm_text">Inhalt der Datei – Übungen: %1$d, Pläne: %2$d, Trainings: %3$d.\n\nAlle aktuellen Daten in der App werden dadurch ersetzt. Exportiere vorher, wenn du sie behalten willst.</string>
+    <string name="import_confirm_button">Ersetzen</string>
+    <string name="export_done">Sicherung gespeichert.</string>
+    <string name="import_done">Daten wiederhergestellt.</string>
+    <string name="backup_error_invalid">Die Datei ist keine gültige Forkout-Sicherung.</string>
+    <string name="backup_error_version">Diese Sicherung stammt aus einer neueren Forkout-Version. Bitte aktualisiere die App.</string>
+    <string name="backup_error_io">Die Datei konnte nicht gelesen oder geschrieben werden.</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- Exercise types -->
     <string name="exercise_type_machine">Maschine</string>

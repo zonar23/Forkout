@@ -3,6 +3,7 @@ package io.github.zonar23.forkout.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import io.github.zonar23.forkout.data.db.dao.BackupDao
 import io.github.zonar23.forkout.data.db.dao.ExerciseDao
 import io.github.zonar23.forkout.data.db.dao.PlanDao
 import io.github.zonar23.forkout.data.db.dao.WorkoutDao
@@ -35,6 +36,8 @@ abstract class ForkoutDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
 
     abstract fun workoutDao(): WorkoutDao
+
+    abstract fun backupDao(): BackupDao
 
     companion object {
         const val NAME = "forkout.db"

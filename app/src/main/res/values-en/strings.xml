@@ -11,6 +11,24 @@
     <!-- Settings -->
     <string name="settings_amoled_title">AMOLED black</string>
     <string name="settings_amoled_summary">True black background, saves battery on OLED screens</string>
+    <string name="settings_section_display">Display</string>
+    <string name="settings_section_training">Training</string>
+    <string name="settings_section_data">Data</string>
+    <string name="settings_default_rest_title">Default rest</string>
+    <string name="settings_default_rest_summary">Used for newly added exercises</string>
+    <string name="settings_export_title">Export data</string>
+    <string name="settings_export_summary">Save plans, exercises, workouts and settings as a JSON file</string>
+    <string name="settings_import_title">Import data</string>
+    <string name="settings_import_summary">Restore from a Forkout backup</string>
+    <string name="import_confirm_title">Replace all data?</string>
+    <string name="import_confirm_text">File contents – exercises: %1$d, plans: %2$d, workouts: %3$d.\n\nAll current data in the app will be replaced. Export first if you want to keep it.</string>
+    <string name="import_confirm_button">Replace</string>
+    <string name="export_done">Backup saved.</string>
+    <string name="import_done">Data restored.</string>
+    <string name="backup_error_invalid">The file is not a valid Forkout backup.</string>
+    <string name="backup_error_version">This backup comes from a newer Forkout version. Please update the app.</string>
+    <string name="backup_error_io">The file could not be read or written.</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- Exercise types -->
     <string name="exercise_type_machine">Machine</string>
