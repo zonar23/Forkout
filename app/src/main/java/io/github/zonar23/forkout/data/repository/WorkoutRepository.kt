@@ -106,9 +106,12 @@ class WorkoutRepository @Inject constructor(
     suspend fun moveExerciseToEnd(sessionId: Long, exercisePosition: Int) =
         dao.moveExerciseToEnd(sessionId, exercisePosition)
 
-    suspend fun setCompleted(setId: Long, completed: Boolean) {
-        val set = dao.getSet(setId) ?: return
-        dao.updateSet(set.copy(completedAt = if (completed) clock.instant() else null))
+    /** @return the stored set, or null if it does not exist. */
+    suspend fun setCompleted(setId: Long, completed: Boolean): WorkoutSetEntity? {
+        val set = dao.getSet(setId) ?: return null
+        val updated = set.copy(completedAt = if (completed) clock.instant() else null)
+        dao.updateSet(updated)
+        return updated
     }
 
     suspend fun finish(sessionId: Long) {

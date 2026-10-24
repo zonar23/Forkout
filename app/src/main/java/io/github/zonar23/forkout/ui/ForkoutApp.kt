@@ -10,6 +10,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,11 +38,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.github.zonar23.forkout.R
+import io.github.zonar23.forkout.ui.components.TimeFormat
 import io.github.zonar23.forkout.ui.navigation.ForkoutNavHost
 import io.github.zonar23.forkout.ui.navigation.SettingsRoute
 import io.github.zonar23.forkout.ui.navigation.TopLevelDestination
 import io.github.zonar23.forkout.ui.navigation.WorkoutRoute
 import io.github.zonar23.forkout.ui.theme.ForkoutTheme
+import io.github.zonar23.forkout.ui.theme.NumberTextStyles
+import io.github.zonar23.forkout.ui.workout.currentRest
+import io.github.zonar23.forkout.ui.workout.rememberNow
+import java.time.Duration
 
 /** App shell: top bar with settings action, bottom navigation and the nav host. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +56,7 @@ fun ForkoutApp(
     navController: NavHostController = rememberNavController(),
     viewModel: AppViewModel = hiltViewModel(),
 ) {
-    val activeWorkoutName by viewModel.activeWorkoutName.collectAsStateWithLifecycle()
+    val miniPlayer by viewModel.miniPlayer.collectAsStateWithLifecycle()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val destination = backStackEntry?.destination
     val topLevel = TopLevelDestination.entries.firstOrNull { destination.isOn(it.route) }
@@ -101,9 +107,9 @@ fun ForkoutApp(
         bottomBar = {
             if (topLevel != null) {
                 Column {
-                    activeWorkoutName?.let { name ->
-                        ActiveWorkoutBanner(
-                            name = name,
+                    miniPlayer?.let { state ->
+                        MiniPlayer(
+                            state = state,
                             onClick = { navController.navigate(WorkoutRoute) { launchSingleTop = true } },
                         )
                     }
@@ -122,9 +128,14 @@ fun ForkoutApp(
     }
 }
 
-/** Shown while a workout runs in the background; tapping it returns to the checklist. */
+/**
+ * Mini player for a running workout, like in music apps: day, progress and the remaining
+ * rest. Tapping it returns to the checklist.
+ */
 @Composable
-private fun ActiveWorkoutBanner(name: String, onClick: () -> Unit) {
+private fun MiniPlayer(state: MiniPlayerState, onClick: () -> Unit) {
+    val now by rememberNow(intervalMillis = 500)
+    val rest = state.sets.currentRest(now, state.skippedRestSetId)
     Surface(
         color = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -132,23 +143,45 @@ private fun ActiveWorkoutBanner(name: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .heightIn(min = 56.dp)
-                .padding(horizontal = 16.dp),
-        ) {
-            Icon(painterResource(R.drawable.ic_timer), contentDescription = null)
-            Text(
-                text = stringResource(R.string.workout_running_banner, name),
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 12.dp),
+                    .heightIn(min = 56.dp)
+                    .padding(horizontal = 16.dp),
+            ) {
+                Icon(painterResource(R.drawable.ic_timer), contentDescription = null)
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.workout_running_banner, state.dayName),
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    val progress = stringResource(R.string.workout_sets_progress, state.completedSets, state.totalSets)
+                    Text(
+                        text = rest?.let {
+                            val remaining = Duration.between(now, it.endsAt).seconds.coerceAtLeast(0).toInt()
+                            "$progress · " + stringResource(R.string.mini_player_rest, TimeFormat.formatMinutesSeconds(remaining))
+                        } ?: progress,
+                        style = NumberTextStyles.small,
+                    )
+                }
+                Text(stringResource(R.string.workout_resume), style = MaterialTheme.typography.labelLarge)
+            }
+            LinearProgressIndicator(
+                progress = { if (state.totalSets == 0) 0f else state.completedSets / state.totalSets.toFloat() },
+                color = MaterialTheme.colorScheme.onPrimary,
+                trackColor = MaterialTheme.colorScheme.primary,
+                drawStopIndicator = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 3.dp),
             )
-            Text(stringResource(R.string.workout_resume), style = MaterialTheme.typography.labelLarge)
         }
     }
 }

@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.zonar23.forkout.data.db.entity.WorkoutSetEntity
+import io.github.zonar23.forkout.data.repository.RestStateRepository
 import io.github.zonar23.forkout.data.repository.WorkoutRepository
+import io.github.zonar23.forkout.timer.RestInfo
+import io.github.zonar23.forkout.timer.RestTimerScheduler
 import io.github.zonar23.forkout.ui.components.WeightFormat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +32,8 @@ private data class ActualValues(val reps: Int?, val weightGrams: Int?)
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
     private val repository: WorkoutRepository,
+    private val restTimer: RestTimerScheduler,
+    private val restState: RestStateRepository,
 ) : ViewModel() {
 
     private val local = MutableStateFlow(WorkoutUiState(isLoading = false))
@@ -49,8 +54,13 @@ class WorkoutViewModel @Inject constructor(
         .distinctUntilChanged()
         .mapLatest { ids -> ids.associateWith { repository.lastCompletedSets(it) } }
 
+    /** The skip comes from storage, because it can also happen in the notification. */
+    private val localWithSkip = combine(local, restState.skippedRestSetId) { local, skipped ->
+        local.copy(skippedRestSetId = skipped)
+    }
+
     val uiState: StateFlow<WorkoutUiState> =
-        combine(active, lastSets, actualOverrides, local) { workout, lastSets, overrides, local ->
+        combine(active, lastSets, actualOverrides, localWithSkip) { workout, lastSets, overrides, local ->
             val exercises = workout?.sets.orEmpty().groupByExercise().map { exercise ->
                 exercise.copy(
                     sets = exercise.sets.map { set ->
@@ -119,14 +129,38 @@ class WorkoutViewModel @Inject constructor(
     /** Checks or unchecks a set. Checking starts its rest timer, even if an older one was skipped. */
     fun toggleComplete(set: WorkoutSetEntity) {
         val complete = set.completedAt == null
+        // The next open set in workout order, as it will be once this one is done.
+        val next = uiState.value.exercises
+            .flatMap { exercise -> exercise.sets.mapIndexed { index, it -> Triple(exercise, index, it) } }
+            .firstOrNull { (_, _, it) -> it.completedAt == null && it.id != set.id }
         viewModelScope.launch {
             // Pending value changes must be stored before the set is completed.
-            writeMutex.withLock { repository.setCompleted(set.id, complete) }
-            if (complete) local.update { it.copy(focusedSetId = null, skippedRestSetId = null) }
+            val stored = writeMutex.withLock { repository.setCompleted(set.id, complete) }
+            if (complete) {
+                local.update { it.copy(focusedSetId = null) }
+                restState.clear()
+                val completedAt = stored?.completedAt
+                if (completedAt != null && set.restSeconds > 0) {
+                    restTimer.start(
+                        RestInfo(
+                            afterSetId = set.id,
+                            endsAt = completedAt.plusSeconds(set.restSeconds.toLong()),
+                            totalSeconds = set.restSeconds,
+                            nextExerciseName = next?.first?.exercise?.name,
+                            nextSetNumber = (next?.second ?: 0) + 1,
+                        )
+                    )
+                }
+            } else {
+                restTimer.cancel()
+            }
         }
     }
 
-    fun skipRest(afterSetId: Long) = local.update { it.copy(skippedRestSetId = afterSetId) }
+    fun skipRest(afterSetId: Long) {
+        restTimer.cancel()
+        viewModelScope.launch { restState.skipRestAfter(afterSetId) }
+    }
 
     /** Postpones an exercise, e.g. because its machine is taken. */
     fun moveToEnd(exercise: WorkoutExercise) {
@@ -152,6 +186,7 @@ class WorkoutViewModel @Inject constructor(
         local.update { it.copy(showFinishDialog = false, isClosing = true) }
         viewModelScope.launch {
             writeMutex.withLock { repository.finish(session.id) }
+            endRest()
             local.update { it.copy(finishedSessionId = session.id) }
         }
     }
@@ -165,8 +200,15 @@ class WorkoutViewModel @Inject constructor(
         local.update { it.copy(showDiscardDialog = false, isClosing = true) }
         viewModelScope.launch {
             writeMutex.withLock { repository.discard(session.id) }
+            endRest()
             local.update { it.copy(isClosing = false) }
         }
+    }
+
+    /** No rest notification or alarm may outlive the workout. */
+    private suspend fun endRest() {
+        restTimer.cancel()
+        restState.clear()
     }
 
     private fun parseNumber(text: String): Int? = when (local.value.numberInput?.field) {

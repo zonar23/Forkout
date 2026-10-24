@@ -1,13 +1,18 @@
 package io.github.zonar23.forkout.ui.workout
 
+import android.app.NotificationManager
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.zonar23.forkout.MainDispatcherRule
 import io.github.zonar23.forkout.data.db.DatabaseTest
 import io.github.zonar23.forkout.data.repository.InMemoryDataStore
 import io.github.zonar23.forkout.data.repository.PlanRepository
+import io.github.zonar23.forkout.data.repository.RestStateRepository
 import io.github.zonar23.forkout.data.repository.SettingsRepository
 import io.github.zonar23.forkout.data.repository.WorkoutRepository
+import io.github.zonar23.forkout.timer.RestTimerScheduler
 import io.github.zonar23.forkout.ui.plans.PlanDayViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -19,6 +24,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import java.time.Clock
 
 @RunWith(AndroidJUnit4::class)
@@ -31,6 +37,14 @@ class WorkoutViewModelTest : DatabaseTest() {
     private val plans by lazy { PlanRepository(db, clock) }
     private val workouts by lazy { WorkoutRepository(db, clock) }
     private var latPullId = 0L
+    private val context: Context get() = ApplicationProvider.getApplicationContext()
+    private val restTimer by lazy { RestTimerScheduler(context, clock).also { it.createChannels() } }
+    private val restState = RestStateRepository(InMemoryDataStore())
+
+    private fun workoutViewModel() = WorkoutViewModel(workouts, restTimer, restState)
+
+    private fun restNotification() =
+        shadowOf(context.getSystemService(NotificationManager::class.java)).getNotification(RestTimerScheduler.NOTIFICATION_REST)
 
     /** Plan day with Beinpresse (2 × 10 @ 80 kg) and Latzug (1 × 12 @ 40 kg). */
     private suspend fun planDay(): Long {
@@ -45,7 +59,7 @@ class WorkoutViewModelTest : DatabaseTest() {
 
     private suspend fun runningWorkout(): WorkoutViewModel {
         workouts.start(planDay())
-        return WorkoutViewModel(workouts).also { vm -> vm.uiState.first { it.session != null } }
+        return workoutViewModel().also { vm -> vm.uiState.first { it.session != null } }
     }
 
     @Test
@@ -131,7 +145,7 @@ class WorkoutViewModelTest : DatabaseTest() {
         workouts.setCompleted(latPullSet.id, completed = true)
         workouts.finish(firstId)
         workouts.start(dayId)
-        val vm = WorkoutViewModel(workouts)
+        val vm = workoutViewModel()
         val state = vm.uiState.first { state -> state.exercises.any { it.lastSets.isNotEmpty() } }
         val set = state.exercises.first { it.exercise.id == latPullId }.sets[0]
 
@@ -181,7 +195,7 @@ class WorkoutViewModelTest : DatabaseTest() {
         workouts.finish(firstId)
 
         workouts.start(dayId)
-        val vm = WorkoutViewModel(workouts)
+        val vm = workoutViewModel()
         val state = vm.uiState.first { state -> state.exercises.any { it.lastSets.isNotEmpty() } }
 
         val last = state.exercises.first { it.exercise.id == latPullId }.lastSets.single()
@@ -210,5 +224,51 @@ class WorkoutViewModelTest : DatabaseTest() {
         assertTrue(dayVm.uiState.first { it.openWorkout }.openWorkout)
         // The blocked start did not create a second session.
         assertEquals(3, workouts.observeActive().first()!!.sets.size)
+    }
+
+    @Test
+    fun completingSet_showsRestCountdownWithNextSet() = runTest {
+        val vm = runningWorkout()
+        val first = vm.uiState.value.exercises[0].sets[0]
+
+        vm.toggleComplete(first)
+        vm.uiState.first { it.completedSets == 1 }
+
+        val notification = assertNotNull(restNotification())
+        assertTrue(notification.extras.getBoolean(android.app.Notification.EXTRA_CHRONOMETER_COUNT_DOWN))
+        assertEquals("Als Nächstes: Beinpresse, Satz 2", notification.extras.getString(android.app.Notification.EXTRA_TEXT))
+    }
+
+    @Test
+    fun skipRest_hidesRingAndRemovesNotification() = runTest {
+        val vm = runningWorkout()
+        val first = vm.uiState.value.exercises[0].sets[0]
+        vm.toggleComplete(first)
+        vm.uiState.first { it.completedSets == 1 }
+
+        vm.skipRest(first.id)
+
+        assertEquals(first.id, vm.uiState.first { it.skippedRestSetId != null }.skippedRestSetId)
+        assertNull(restNotification())
+    }
+
+    @Test
+    fun finish_removesRestNotificationAndSkipState() = runTest {
+        val vm = runningWorkout()
+        val first = vm.uiState.value.exercises[0].sets[0]
+        vm.toggleComplete(first)
+        vm.uiState.first { it.completedSets == 1 }
+        restState.skipRestAfter(first.id)
+
+        vm.finish()
+        vm.uiState.first { it.finishedSessionId != null }
+
+        assertNull(restNotification())
+        assertNull(restState.skippedRestSetId.first())
+    }
+
+    private fun <T : Any> assertNotNull(value: T?): T {
+        org.junit.Assert.assertNotNull(value)
+        return value!!
     }
 }

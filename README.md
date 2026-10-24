@@ -27,7 +27,11 @@ Forkout ist eine freie, werbefreie Open-Source-App für Android, mit der du Trai
 
 ## Privatsphäre
 
-Forkout hat **keine Internet-Berechtigung**, kein Konto, keine Werbung, keine Analytics und keine Tracker. Alle Daten bleiben auf deinem Gerät. Die einzige Berechtigung ist `VIBRATE` für das Pausenende.
+Forkout hat **keine Internet-Berechtigung**, kein Konto, keine Werbung, keine Analytics und keine Tracker. Alle Daten bleiben auf deinem Gerät. Die Berechtigungen dienen ausschließlich dem Pausentimer:
+
+- `VIBRATE`: Vibration beim Abhaken, kurz vor und am Ende der Pause
+- `POST_NOTIFICATIONS`: Countdown der Pause auf dem Sperrbildschirm (wird beim ersten Training abgefragt und ist optional)
+- `USE_EXACT_ALARM` bzw. `SCHEDULE_EXACT_ALARM` (bis Android 12): Pausenende auf die Sekunde genau, auch bei gesperrtem Bildschirm
 
 ## Installation
 

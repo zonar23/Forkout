@@ -184,6 +184,18 @@
     <string name="workout_overview">Übersicht</string>
     <string name="workout_move_to_end">Ans Ende schieben</string>
     <string name="number_pad_delete">Zeichen löschen</string>
+    <string name="workout_next_set_label">%1$s, Satz %2$d</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_rest">Pausentimer</string>
+    <string name="notification_channel_rest_description">Restzeit der laufenden Pause, auch auf dem Sperrbildschirm</string>
+    <string name="notification_channel_rest_over">Pausenende</string>
+    <string name="notification_channel_rest_over_description">Kurzer Hinweis, wenn die Pause vorbei ist</string>
+    <string name="notification_rest_title">Pause</string>
+    <string name="notification_rest_next">Als Nächstes: %1$s</string>
+    <string name="notification_rest_over_title">Pause vorbei</string>
+    <string name="notification_rest_over_text">Weiter mit %1$s</string>
+    <string name="mini_player_rest">Pause %1$s</string>
 
     <!-- Workout summary -->
     <string name="summary_title">Geschafft!</string>

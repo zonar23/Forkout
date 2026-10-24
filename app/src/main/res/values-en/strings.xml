@@ -181,6 +181,18 @@
     <string name="workout_overview">Overview</string>
     <string name="workout_move_to_end">Move to end</string>
     <string name="number_pad_delete">Delete character</string>
+    <string name="workout_next_set_label">%1$s, set %2$d</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_rest">Rest timer</string>
+    <string name="notification_channel_rest_description">Remaining time of the current rest, also on the lock screen</string>
+    <string name="notification_channel_rest_over">Rest over</string>
+    <string name="notification_channel_rest_over_description">Short notice when the rest is over</string>
+    <string name="notification_rest_title">Rest</string>
+    <string name="notification_rest_next">Up next: %1$s</string>
+    <string name="notification_rest_over_title">Rest over</string>
+    <string name="notification_rest_over_text">Continue with %1$s</string>
+    <string name="mini_player_rest">Rest %1$s</string>
 
     <!-- Workout summary -->
     <string name="summary_title">Well done!</string>

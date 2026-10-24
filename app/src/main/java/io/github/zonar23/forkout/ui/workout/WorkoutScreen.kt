@@ -1,5 +1,10 @@
 package io.github.zonar23.forkout.ui.workout
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.zonar23.forkout.R
@@ -53,10 +59,11 @@ import io.github.zonar23.forkout.ui.components.OverflowMenu
 import io.github.zonar23.forkout.ui.components.RepeatingStepButton
 import io.github.zonar23.forkout.ui.components.TimeFormat
 import io.github.zonar23.forkout.ui.components.WeightFormat
+import io.github.zonar23.forkout.timer.REST_WARNING_SECONDS
+import io.github.zonar23.forkout.timer.vibrateTick
 import io.github.zonar23.forkout.ui.theme.NumberTextStyles
 import io.github.zonar23.forkout.ui.workout.WorkoutViewModel.Companion.REPS_STEP
 import io.github.zonar23.forkout.ui.workout.WorkoutViewModel.Companion.WEIGHT_STEP_GRAMS
-import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
 
@@ -77,6 +84,16 @@ fun WorkoutScreen(
     val listState = rememberLazyListState()
 
     KeepScreenOn()
+    // The rest countdown on the lock screen needs this; without it only vibration remains.
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermission.launch(permission)
+            }
+        }
+    }
     LaunchedEffect(uiState.finishedSessionId) {
         uiState.finishedSessionId?.let(onFinished)
     }
@@ -341,26 +358,11 @@ private fun AllDoneCard() {
 }
 
 /**
- * Large countdown ring after a completed set. Buzzes 10 s before the end and at the end,
- * as long as it is shown.
+ * Large countdown ring after a completed set. The buzzes before and at the end come from
+ * the rest alarms (see RestTimerScheduler), so they also work with the screen locked.
  */
 @Composable
 private fun RestRing(rest: RestTimer, now: Instant, onSkip: () -> Unit) {
-    val context = LocalContext.current
-    LaunchedEffect(rest.afterSetId, rest.endsAt) {
-        val untilEnd = Duration.between(Instant.now(), rest.endsAt).toMillis()
-        val untilWarning = untilEnd - REST_WARNING_SECONDS * 1000L
-        // Only buzz for moments that actually happen while the user is watching.
-        if (untilWarning > 0 && rest.totalSeconds > REST_WARNING_SECONDS * 2) {
-            delay(untilWarning)
-            vibrateRestWarning(context)
-        }
-        val remaining = Duration.between(Instant.now(), rest.endsAt).toMillis()
-        if (remaining > 0) {
-            delay(remaining)
-            vibrateRestOver(context)
-        }
-    }
     val remainingMillis = Duration.between(now, rest.endsAt).toMillis().coerceAtLeast(0)
     val fraction = remainingMillis / (rest.totalSeconds * 1000f)
     val warning = remainingMillis <= REST_WARNING_SECONDS * 1000L
